@@ -1,4 +1,5 @@
 import { TFile, Vault } from "obsidian";
+import { ExcalidrawDecompressor } from "ExcalidrawDecompressor";
 
 export interface FrameInfo{
     name: string;
@@ -63,14 +64,28 @@ export class FrameIndexer{
 
             console.log(`✅ ${isCompressed ? 'Compressed' : 'Regular'} JSON block found`);
 
+            let excalidrawData;
+
             if (isCompressed) {
                 console.log('🗜️ Compressed format detected - need to decompress first');
-                console.log('💡 Tip: Use "Decompress current Excalidraw file" command in Obsidian');
-                return [];
+                try {
+                    excalidrawData = ExcalidrawDecompressor.decompress(jsonMatch[1]);
+                    console.log('✅ Successfully decompressed data');
+                } catch (error) {
+                    console.log('❌ Decompression failed: ', error);
+
+                    // Show compression info for debugging
+                    const info = ExcalidrawDecompressor.getCompressionInfo(jsonMatch[1]);
+                    console.log('🔍 Compression info: ', info);
+
+                    console.log('💡 Tip: Use "Decompress current Excalidraw file" command in Obsidian');
+                    return [];
+                }
+            } else {
+                console.log('✅ Parsing regular JSON...');
+                excalidrawData = JSON.parse(jsonMatch[1]);
             }
 
-            console.log('✅ JSON block found, parsing...');
-            const excalidrawData = JSON.parse(jsonMatch[1]);
             const elements = excalidrawData.elements || [];
 
             console.log(`📊 Found ${elements.length} total elements`);
