@@ -44,7 +44,7 @@ export class ExcalidrawDecompressor{
 
             const methodNames = [
                 'decompressFromUTF16',
-                'decompressFromEncodeURIComponent',
+                'decompressFromEncodedURIComponent',
                 'decompress (direct)'
             ];
 
