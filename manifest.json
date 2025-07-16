@@ -1,11 +1,11 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
+	"id": "excalink-plugin",
+	"name": "Excalink Plugin",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
+	"description": "Enable smart auto-suggestion of frame names from .excalidraw.md files when typing [[filename# in the editor",
+	"author": "Aarambha",
+	"authorUrl": "https://github.com/AarambhaAnta/Excalink",
+	"fundingUrl": "https://github.com/sponsors/AarambhaAnta",
 	"isDesktopOnly": false
 }
