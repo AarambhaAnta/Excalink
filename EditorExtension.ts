@@ -1,11 +1,10 @@
 import { Extension } from "@codemirror/state";
 import { EditorView, ViewUpdate, ViewPlugin, PluginValue } from "@codemirror/view";
-import * as exp from "constants";
 import { FrameIndexer } from "FrameIndexer";
 
 /**
  * EditorExtension - Handles detection of [[filename# typing patterns
- * Integrates with CodeMirror to watch for user input and cursor postion
+ * Integrates with CodeMirror to watch for user input and cursor position
  */
 export class EditorExtension {
     private frameIndexer: FrameIndexer;
@@ -143,25 +142,70 @@ export class ExcalinkViewPlugin implements PluginValue {
         console.log(`    📍 Position: ${match.startPos}-${match.endPos}`);
         console.log(`    ✅ Complete: ${match.isComplete}`);
 
-        // Check if we have frames for this filename
-        const frames = this.frameIndexer?.getFramesForFile(match.filename);
+        // Try different filename variations to find frames
+        const possibleFilenames = this.generateFilenameVariations(match.filename);
+
+        let frames = null;
+        let matchedFilename = '';
+
+        // Try each filename variation
+        for (const filename of possibleFilenames) {
+            const foundFrames = this.frameIndexer?.getFramesForFile(filename);
+            if (foundFrames && foundFrames.length > 0) {
+                frames = foundFrames;
+                matchedFilename = filename;
+                break;
+            }
+        }
+
         if (frames && frames.length > 0) {
-            console.log(`    🖼️ Available frames: [${frames.map(f => f.name).join(', ')}]`);
-
-            // Filter frames based on partial input
+            console.log(`    🖼️ Available frames in "${matchedFilename}": [${frames.map(f => f.name).join(', ')}]`);
+            
+            // Filter frames based on partial input (handle both formats)
             if (match.partialFrame) {
-                const matchingFrames = frames.filter(frame => frame.name.toLowerCase().startsWith(match.partialFrame.toLowerCase()));
+                const cleanPartialFrame = this.cleanPartialFrame(match.partialFrame);
 
-                console.log(`    🎯 Matching frames: [${matchingFrames.map(f => f.name).join(', ')}]`);
+                const matchingFrames = frames.filter(frame => frame.name.toLowerCase().startsWith(cleanPartialFrame.toLowerCase()));
+                console.log(`    🎯 Matching frames for "${cleanPartialFrame}": [${matchingFrames.map(f => f.name).join(', ')}]`);
             }
         } else {
-            console.log(`    ❌ No frames found for file "${match.filename}"`);
+            console.log(`    ❌ No frames found for any variation of "${match.filename}"`);
+            console.log(`    🔍 Tried: ${possibleFilenames.join(', ')}`);
         }
     }
+    /**
+     * Generate different filename variations to try
+     */
+    private generateFilenameVariations(filename: string): string[] {
+        const variations = [
+            filename,                                          // "first.excalidraw"
+            filename.replace('.excalidraw', ''),               // "first"
+            filename.replace('.excalidraw.md', ''),            // "first" (if they included .md)
+            filename.replace('.excalidraw', '.excalidraw.md'), // "first.excalidraw.md"
+        ];
+
+        // Add .md version if not already present
+        if (!filename.endsWith('.md')) {
+            variations.push(filename + '.md');
+        }
+
+        // Remove duplicates and return
+        return [...new Set(variations)];
+    }
+
+    /**
+     * Clean partial frame input to handle different formats
+     */
+    private cleanPartialFrame(partialFrame: string): string {
+        // Remove ^frame= prefix if present (Obsidian's block reference format)
+        return partialFrame.replace(/^\^frame=/, '').replace(/^\^/,'');
+    }
+
     destroy(): void {
         console.log('🧹 ExcalinkViewPlugin destroyed');
     }
 }
+
 
 /**
  * Interface for wikilink match results
