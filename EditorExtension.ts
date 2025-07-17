@@ -39,14 +39,9 @@ export class ExcalinkViewPlugin implements PluginValue {
      * Called whenever the editor view updates (typing, cursor movement, etc.)
      */
     update(update: ViewUpdate): void {
-        // Only process if there were document changes (user typed something)
-        if (update.docChanged) {
-            console.log('📝 Document changed - checking for [[filename# pattern...');
-            this.checkForWikilinkPattern(update.view);
-        }
-
-        // Also check on selection changes (cursor movement)
-        if (update.selectionSet) {
+        // Process if there were document changes or selection changes
+        if (update.docChanged || update.selectionSet) {
+            console.log('📝 Update detected - checking for [[filename# pattern...');
             this.checkForWikilinkPattern(update.view);
         }
     }
@@ -113,7 +108,9 @@ export class ExcalinkViewPlugin implements PluginValue {
             endPos = cursorPos;
         }
 
-        const wikilinkContent = lineText.substring(startPos + 2, endPos - (endPos > cursorPos ? 2 : 0));
+        // Calculate the end index for slicing the wikilink content
+        const contentEnd = endPos > cursorPos ? endPos - 2 : endPos; // Subtract 2 only if the link is complete
+        const wikilinkContent = lineText.substring(startPos + 2, contentEnd);
 
         // Check if it contains # (indicating frame reference)
         if (wikilinkContent.includes('#')) {
