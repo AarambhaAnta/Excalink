@@ -113,7 +113,9 @@ export class ExcalinkViewPlugin implements PluginValue {
             endPos = cursorPos;
         }
 
-        const wikilinkContent = lineText.substring(startPos + 2, endPos - (endPos > cursorPos ? 2 : 0));
+        // Calculate the end index for slicing the wikilink content
+        const contentEnd = endPos > cursorPos ? endPos - 2 : endPos; // Subtract 2 only if the link is complete
+        const wikilinkContent = lineText.substring(startPos + 2, contentEnd);
 
         // Check if it contains # (indicating frame reference)
         if (wikilinkContent.includes('#')) {
