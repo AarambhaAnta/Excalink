@@ -39,14 +39,9 @@ export class ExcalinkViewPlugin implements PluginValue {
      * Called whenever the editor view updates (typing, cursor movement, etc.)
      */
     update(update: ViewUpdate): void {
-        // Only process if there were document changes (user typed something)
-        if (update.docChanged) {
-            console.log('📝 Document changed - checking for [[filename# pattern...');
-            this.checkForWikilinkPattern(update.view);
-        }
-
-        // Also check on selection changes (cursor movement)
-        if (update.selectionSet) {
+        // Process if there were document changes or selection changes
+        if (update.docChanged || update.selectionSet) {
+            console.log('📝 Update detected - checking for [[filename# pattern...');
             this.checkForWikilinkPattern(update.view);
         }
     }
