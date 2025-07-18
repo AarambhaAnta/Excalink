@@ -13,7 +13,9 @@ An Obsidian plugin that enables smart auto-suggestion of frame names from `.exca
 - 🔧 **Smart Filename Matching**: Supports multiple filename variations and formats
 - ⚡ **Debounced Input**: Optimized performance with intelligent timing
 - 🎯 **Cursor Management**: Preserves cursor position and handles edge cases gracefully
-- 📝 **Console Debugging**: Detailed logging of detected patterns and matching frames
+- � **Performance Caching**: Intelligent caching system to avoid repeated file reads
+- 📡 **File Watching**: Automatically updates frame index when files change
+- �📝 **Console Debugging**: Detailed logging of detected patterns and matching frames
 - �️ **Frame Preview**: Visual frame suggestions with icons and file context
 - �🗜️ **Format Support**: Handles both compressed and regular Excalidraw formats
 - 🔧 **Smart Filename Matching**: Supports multiple filename variations and formats
@@ -28,6 +30,14 @@ An Obsidian plugin that enables smart auto-suggestion of frame names from `.exca
 4. Use ↑↓ to navigate, ↵ to select, or Esc to dismiss
 5. Selecting a frame automatically inserts the complete link: `[[filename#^frame=frameName]]`
 6. The cursor is positioned after the inserted link for continued editing
+
+## Performance Features
+
+- **Smart Caching**: Files are only re-processed when they change
+- **Automatic Updates**: Frame index updates automatically when Excalidraw files are modified
+- **Memory Efficient**: Uses content hashing to detect actual changes
+- **Background Processing**: File watching happens automatically without user intervention
+- **Debug Commands**: Use "Show Cache Statistics" command to view cache performance
 
 ## Installation
 
@@ -48,7 +58,8 @@ An Obsidian plugin that enables smart auto-suggestion of frame names from `.exca
 - [x] Day 2: Editor integration & pattern detection  
 - [x] Day 3: Auto-suggestion modal with fuzzy search
 - [x] Day 4: Frame text replacement with Obsidian block reference format (`#^frame=frameName`)
-- [ ] Day 5+: File watching & performance optimizations
+- [x] Day 5: Performance caching & automatic file watching
+- [ ] Future: Advanced features & optimizations
 
 ## License
 
