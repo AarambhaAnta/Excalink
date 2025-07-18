@@ -3,19 +3,23 @@ import { EditorView, ViewUpdate, ViewPlugin, PluginValue } from "@codemirror/vie
 import { FrameIndexer } from "FrameIndexer";
 import { FrameSuggestModal } from "FrameSuggestModal";
 import { App } from "obsidian";
+import Excalink from "main";
 
 /**
  * EditorExtension - Handles detection of [[filename# typing patterns
  * Integrates with CodeMirror to watch for user input and cursor position
+ * Day 7: Enhanced with settings integration
  */
 export class EditorExtension {
     private frameIndexer: FrameIndexer;
     private app: App;
+    private plugin: Excalink;
     private currentViewPlugin: ExcalinkViewPlugin | null = null;
 
-    constructor(frameIndexer: FrameIndexer, app: App) {
+    constructor(frameIndexer: FrameIndexer, app: App, plugin: Excalink) {
         this.frameIndexer = frameIndexer;
         this.app = app;
+        this.plugin = plugin;
     }
 
     /**
@@ -26,7 +30,7 @@ export class EditorExtension {
         const app = this.app;
 
         return ViewPlugin.define((view: EditorView) => {
-            const plugin = new ExcalinkViewPlugin(view, frameIndexer, app);
+            const plugin = new ExcalinkViewPlugin(view, frameIndexer, app, this.plugin);
             this.currentViewPlugin = plugin; // Store reference for testing
             return plugin;
         });
@@ -64,14 +68,16 @@ export class EditorExtension {
 export class ExcalinkViewPlugin implements PluginValue {
     private frameIndexer: FrameIndexer;
     private app: App;
+    private plugin: Excalink;
     private debounceTimer: NodeJS.Timeout | null = null;
     private currentModal: FrameSuggestModal | null = null;
     private currentView: EditorView | null = null;
     private currentMatch: WikilinkMatch | null = null;
 
-    constructor(view: EditorView, frameIndexer: FrameIndexer, app: App) {
+    constructor(view: EditorView, frameIndexer: FrameIndexer, app: App, plugin: Excalink) {
         this.frameIndexer = frameIndexer;
         this.app = app;
+        this.plugin = plugin;
         this.currentView = view;
         // console.log('🎯 ExcalinkViewPlugin initialized');
     }
@@ -368,7 +374,8 @@ export class ExcalinkViewPlugin implements PluginValue {
                         } catch (error) {
                             console.error('❌ Error handling frame selection:', error);
                         }
-                    }
+                    },
+                    this.plugin.settings
                 );
             } catch (error) {
                 console.error('❌ Error creating FrameSuggestModal:', error);

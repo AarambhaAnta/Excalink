@@ -9,11 +9,6 @@ An Obsidian plugin that enables smart auto-suggestion of frame names from `.exca
 - 🎭 **Fuzzy Search Modal**: Shows interactive frame suggestions with fuzzy matching  
 - 📅 **Smart Frame Ordering**: Displays frames in reverse chronological order (newest first)
 - 🖼️ **Frame Preview**: Visual frame suggestions with icons and file context
-- 🎯 **Real-time Pattern Detection**: Detects `[[filename#` typing patterns in the editor
-- 🎭 **Fuzzy Search Modal**: Shows interactive frame suggestions with fuzzy matching
-- � **Smart Frame Ordering**: Displays frames in reverse chronological order (newest first)
-- 🆕 **Recent Frame Indicators**: Visual cues for recently created frames
-- �🖼️ **Frame Preview**: Visual frame suggestions with icons and file context
 - 🔗 **Auto-completion**: Automatically replaces partial links with complete frame references
 - 🗜️ **Format Support**: Handles both compressed and regular Excalidraw formats
 - 🔧 **Smart Filename Matching**: Supports multiple filename variations and formats
@@ -21,19 +16,50 @@ An Obsidian plugin that enables smart auto-suggestion of frame names from `.exca
 - 🎯 **Cursor Management**: Preserves cursor position and handles edge cases gracefully
 - 💾 **Performance Caching**: Intelligent caching system to avoid repeated file reads
 - 📡 **File Watching**: Automatically updates frame index when files change
-- 📝 **Console Debugging**: Detailed logging of detected patterns and matching frames
 - 🛡️ **Robust Error Handling**: Graceful handling of malformed files and edge cases
 - 🧪 **Comprehensive Testing**: Built-in test suite for validation and debugging
+- ⚙️ **Comprehensive Settings**: Full user configuration with settings panel for all features
 
 ## How to use
 
-1. Create frames in your Excalidraw drawings and give them names
-2. When typing `[[filename#` in any note, the plugin detects the pattern in real-time
-3. A fuzzy search modal appears showing all matching frames from that file (newest frames first)
-4. Use ↑↓ to navigate, ↵ to select, or Esc to dismiss
-5. When you type, the list filters to show matching frame names using fuzzy search
-6. Selecting a frame automatically inserts the complete link: `[[filename#^frame=frameName]]`
-7. The cursor is positioned after the inserted link for continued editing
+### Quick Start
+
+1. **Create frames** in your Excalidraw drawings and give them names
+2. **Type the pattern** `[[filename#` in any note - the plugin detects this in real-time
+3. **Select from suggestions** - A fuzzy search modal appears showing all matching frames from that file (newest frames first)
+4. **Navigate and filter** - Use ↑↓ to navigate, ↵ to select, or Esc to dismiss. Type to filter with fuzzy search
+5. **Auto-insertion** - Selecting a frame automatically inserts the complete link: `[[filename#^frame=frameName]]`
+6. **Continue editing** - The cursor is positioned after the inserted link for continued editing
+
+### Settings Configuration
+
+Access plugin settings via **Settings → Community Plugins → Excalink Plugin → Settings**
+
+#### Core Functionality
+
+- **Enable Frame Suggestions**: Main toggle for the plugin functionality
+- **Enable File Watching**: Automatic updates when Excalidraw files change
+- **Auto Scan on Startup**: Scan all files when Obsidian starts
+
+#### Performance Settings
+
+- **Enable Caching**: Improves performance by caching frame data
+- **Max Cache Size**: Control memory usage (default: 100 files)
+- **Debounce Delay**: Typing delay before triggering suggestions (default: 300ms)
+
+#### Modal Behavior
+
+- **Enable Fuzzy Search**: Smart matching of frame names
+- **Show Recent Frames First**: Newest frames appear at the top
+- **Max Suggestions Displayed**: Limit number of suggestions shown (default: 50)
+- **Modal Theme**: Choose between 'default' and 'minimal' appearance
+
+#### Debug Options
+
+- **Enable Debug Logging**: Detailed console output for troubleshooting
+- **Show Diagnostics in Notices**: Display plugin status messages
+- **Show Frame Icons**: Visual frame indicators in suggestions
+- **Show File Context**: Display source file information in suggestions
 
 ## Performance Features
 
@@ -69,16 +95,38 @@ Access these commands through the Command Palette (Ctrl/Cmd + P):
 
 ## Installation
 
+### From Obsidian Community Plugins (Recommended)
+
+1. Open **Settings** in Obsidian
+2. Navigate to **Community Plugins**
+3. Click **Browse** and search for "Excalink"
+4. Click **Install** and then **Enable**
+
 ### Manual Installation
 
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/excalink-plugin/`
+1. Download the latest release from [GitHub Releases](https://github.com/AarambhaAnta/Excalink/releases)
+2. Extract the files to your vault's plugins folder: `VaultFolder/.obsidian/plugins/excalink-plugin/`
+3. Refresh plugins in Obsidian settings or restart Obsidian
+4. Enable the plugin in **Settings → Community Plugins**
 
-### Development
+### Development Setup
 
-- Clone this repo
-- `npm i` to install dependencies  
-- `npm run dev` to start compilation in watch mode
-- Enable the plugin in Obsidian settings
+```bash
+# Clone the repository
+git clone https://github.com/AarambhaAnta/Excalink.git
+cd Excalink
+
+# Install dependencies
+npm install
+
+# Start development build (watch mode)
+npm run dev
+
+# Build for production
+npm run build
+```
+
+After building, enable the plugin in Obsidian settings.
 
 ## Troubleshooting
 
@@ -131,13 +179,81 @@ Access these commands through the Command Palette (Ctrl/Cmd + P):
 
 ## Roadmap
 
-- [x] Day 1: Vault scanning & frame extraction
-- [x] Day 2: Editor integration & pattern detection  
-- [x] Day 3: Auto-suggestion modal with fuzzy search
-- [x] Day 4: Frame text replacement with Obsidian block reference format (`#^frame=frameName`)
-- [x] Day 5: Performance caching & automatic file watching
-- [x] Day 6: Polish & test - Robust error handling, malformed file support, comprehensive testing
-- [ ] Future: Advanced features & optimizations
+- [x] **Day 1**: Vault scanning & frame extraction
+- [x] **Day 2**: Editor integration & pattern detection  
+- [x] **Day 3**: Auto-suggestion modal with fuzzy search
+- [x] **Day 4**: Frame text replacement with Obsidian block reference format (`#^frame=frameName`)
+- [x] **Day 5**: Performance caching & automatic file watching
+- [x] **Day 6**: Polish & test - Robust error handling, malformed file support, comprehensive testing
+- [x] **Day 7**: Settings & release - Comprehensive user configuration and release preparation
+
+### Future Enhancements
+
+- [ ] **Batch Operations**: Bulk frame management tools
+- [ ] **Advanced Filtering**: Date-based and tag-based frame filtering
+- [ ] **Frame Templates**: Quick frame creation with predefined layouts
+- [ ] **Integration Improvements**: Better mobile support and theme compatibility
+- [ ] **Performance Optimizations**: Lazy loading and virtual scrolling for large collections
+- [ ] **Export Features**: Frame data export and backup utilities
+
+## Changelog
+
+### Version 1.0.0 (2024-07-19)
+
+Initial Release - Complete 7-Day Development Sprint
+
+#### Core Features
+
+- ✅ **Smart Frame Detection**: Comprehensive `.excalidraw.md` file scanning and frame extraction
+- ✅ **Real-time Editor Integration**: Instant pattern detection for `[[filename#` typing patterns
+- ✅ **Interactive Modal Interface**: Fuzzy search modal with keyboard navigation and filtering
+- ✅ **Intelligent Auto-completion**: Automatic link insertion with proper Obsidian block reference format
+- ✅ **Performance Caching**: Advanced caching system with content hashing and automatic invalidation
+- ✅ **File Watching**: Real-time frame index updates when Excalidraw files change
+
+#### User Experience
+
+- ✅ **Comprehensive Settings Panel**: Full user configuration with granular control options
+- ✅ **Visual Frame Preview**: Frame suggestions with icons and file context information
+- ✅ **Smart Ordering**: Chronological frame display with newest frames prioritized
+- ✅ **Robust Error Handling**: Graceful handling of malformed files and edge cases
+- ✅ **Debug Tools**: Built-in diagnostic commands and comprehensive logging
+
+#### Plugin Architecture
+
+- ✅ **Modular Design**: Clean separation of concerns with dedicated components
+- ✅ **Type Safety**: Full TypeScript implementation with comprehensive type definitions
+- ✅ **Memory Efficiency**: Optimized data structures and intelligent cache management
+- ✅ **Extensibility**: Plugin architecture designed for future enhancements
+
+#### Development Journey
+
+- **Day 1**: Foundation - Vault scanning & frame extraction system
+- **Day 2**: Integration - Editor integration & pattern detection engine
+- **Day 3**: Interface - Auto-suggestion modal with fuzzy search capabilities
+- **Day 4**: Completion - Frame text replacement with Obsidian block reference format
+- **Day 5**: Performance - Advanced caching & automatic file watching system
+- **Day 6**: Polish - Comprehensive error handling, testing, and malformed file support
+- **Day 7**: Release - Settings configuration, documentation, and release preparation
+
+## Support the Project
+
+If Excalink saves you time and enhances your Excalidraw workflow, consider supporting its development:
+
+- ⭐ **Star the repository** on GitHub
+- 💖 **Sponsor on GitHub**: [github.com/sponsors/AarambhaAnta](https://github.com/sponsors/AarambhaAnta)
+- ☕ **Buy me a coffee**: [ko-fi.com/aarambhaanta](https://ko-fi.com/aarambhaanta)
+- 🐛 **Report issues** and suggest improvements
+- 📢 **Share with others** who use Excalidraw + Obsidian
+
+### Custom Plugin Development
+
+Need a custom Obsidian plugin for your workflow? I offer:
+- **Custom Plugin Development**: Tailored solutions for your specific needs
+- **Plugin Consultation**: Expert advice on Obsidian automation and workflows
+- **Training & Workshops**: Learn to build your own plugins
+
+Contact: [your-email@example.com](mailto:your-email@example.com)
 
 ## License
 

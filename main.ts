@@ -1,69 +1,37 @@
 import { Plugin, TFile, Notice } from "obsidian";
 import { FrameIndexer } from "FrameIndexer";
 import { EditorExtension } from "EditorExtension";
+import { ExcalinkSettings, DEFAULT_SETTINGS } from "settings";
+import { ExcalinkSettingTab } from "ExcalinkSettingTab";
 
 /**
- * Excalink Plugin - Day 6: Polished and robust implementation
- * Enhanced with comprehensive error handling and graceful fallbacks
+ * Excalink Plugin - Day 7: Settings & Release
+ * Enhanced with comprehensive settings and user configuration
  */
 export default class Excalink extends Plugin{
-	private frameIndexer: FrameIndexer;
-	private editorExtension: EditorExtension;
+	public settings: ExcalinkSettings;
+	public frameIndexer: FrameIndexer;
+	private editorExtension: EditorExtension | null;
 	private isInitialized = false;
 
 	async onload(): Promise<void> {
 		try {
-			// console.log('🚀 Excalink plugin loading...');
+			// Load settings first
+			await this.loadSettings();
+			console.log('🚀 Excalink plugin loading...');
 
-			// Initialize frame indexer with enhanced error handling (Day 1)
-			try {
-				this.frameIndexer = new FrameIndexer(this.app.vault);
-				await this.frameIndexer.scanAllExcalidrawFiles();
-				// console.log('✅ Frame indexer initialized successfully');
-			} catch (error) {
-				console.error('❌ Failed to initialize frame indexer:', error);
-				new Notice('Excalink: Failed to scan Excalidraw files. Plugin will work with limited functionality.');
-				// Create a fallback frame indexer to prevent crashes
-				this.frameIndexer = new FrameIndexer(this.app.vault);
-			}
+			// Add settings tab
+			this.addSettingTab(new ExcalinkSettingTab(this.app, this));
 
-			// Initialize editor extension with validation (Day 2)
-			try {
-				// console.log('🎯 Setting up editor extension...');
-				
-				if (!this.app) {
-					throw new Error('App instance not available');
-				}
-				
-				this.editorExtension = new EditorExtension(this.frameIndexer, this.app);
-				this.registerEditorExtension(this.editorExtension.getExtension());
-				// console.log('✅ Editor extension registered successfully');
-			} catch (error) {
-				console.error('❌ Failed to initialize editor extension:', error);
-				new Notice('Excalink: Failed to initialize editor integration. Please restart Obsidian.');
-				return;
-			}
-
-			// Day 5: Register file change event listeners for caching
-			try {
-				// console.log('📡 Setting up file change listeners...');
-				this.setupFileChangeListeners();
-				// console.log('✅ File change listeners registered');
-			} catch (error) {
-				console.error('❌ Failed to setup file change listeners:', error);
-				console.warn('⚠️ File watching disabled - frames will not auto-update');
-			}
-
-			// Add debug commands with error handling
-			try {
-				this.setupDebugCommands();
-				// console.log('✅ Debug commands registered');
-			} catch (error) {
-				console.error('❌ Failed to register debug commands:', error);
+			// Only initialize core functionality if enabled
+			if (this.settings.enableFrameSuggestions) {
+				await this.initializeCore();
+			} else {
+				console.log('📴 Frame suggestions disabled in settings');
 			}
 
 			this.isInitialized = true;
-			// console.log('✅ Excalink plugin loaded successfully with all features!');
+			console.log('✅ Excalink plugin loaded successfully!');
 			
 		} catch (error) {
 			console.error('❌ Critical error during plugin loading:', error);
@@ -72,8 +40,142 @@ export default class Excalink extends Plugin{
 	}
 
 	/**
+	 * Load plugin settings with fallbacks
+	 */
+	async loadSettings(): Promise<void> {
+		try {
+			this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+		} catch (error) {
+			console.error('❌ Error loading settings, using defaults:', error);
+			this.settings = { ...DEFAULT_SETTINGS };
+		}
+	}
+
+	/**
+	 * Save plugin settings
+	 */
+	async saveSettings(): Promise<void> {
+		try {
+			await this.saveData(this.settings);
+		} catch (error) {
+			console.error('❌ Error saving settings:', error);
+			throw error;
+		}
+	}
+
+	/**
+	 * Initialize core plugin functionality
+	 */
+	async initializeCore(): Promise<void> {
+		try {
+			// Initialize frame indexer with enhanced error handling
+			try {
+				this.frameIndexer = new FrameIndexer(this.app.vault);
+				await this.frameIndexer.scanAllExcalidrawFiles();
+				if (this.settings.enableDebugLogging) {
+					console.log('✅ Frame indexer initialized successfully');
+				}
+			} catch (error) {
+				console.error('❌ Failed to initialize frame indexer:', error);
+				new Notice('Excalink: Failed to scan Excalidraw files. Plugin will work with limited functionality.');
+				// Create a fallback frame indexer to prevent crashes
+				this.frameIndexer = new FrameIndexer(this.app.vault);
+			}
+
+			// Initialize editor extension with validation
+			try {
+				if (!this.app) {
+					throw new Error('App instance not available');
+				}
+				
+				this.editorExtension = new EditorExtension(this.frameIndexer, this.app, this);
+				this.registerEditorExtension(this.editorExtension.getExtension());
+				if (this.settings.enableDebugLogging) {
+					console.log('✅ Editor extension registered successfully');
+				}
+			} catch (error) {
+				console.error('❌ Failed to initialize editor extension:', error);
+				new Notice('Excalink: Failed to initialize editor integration. Please restart Obsidian.');
+				return;
+			}
+
+			// Register file change event listeners for caching (if enabled)
+			if (this.settings.enableFileWatching) {
+				try {
+					this.setupFileChangeListeners();
+					if (this.settings.enableDebugLogging) {
+						console.log('✅ File change listeners registered');
+					}
+				} catch (error) {
+					console.error('❌ Failed to setup file change listeners:', error);
+					console.warn('⚠️ File watching disabled - frames will not auto-update');
+				}
+			}
+
+			// Add debug commands with error handling
+			try {
+				this.setupDebugCommands();
+				if (this.settings.enableDebugLogging) {
+					console.log('✅ Debug commands registered');
+				}
+			} catch (error) {
+				console.error('❌ Failed to register debug commands:', error);
+			}
+
+		} catch (error) {
+			console.error('❌ Error initializing core functionality:', error);
+			throw error;
+		}
+	}
+
+	/**
+	 * Disable core plugin functionality
+	 */
+	disableCore(): void {
+		try {
+			// The editor extension will be automatically cleaned up by Obsidian
+			// when we unregister it, but we need to set our reference to null
+			this.editorExtension = null;
+
+			if (this.settings.enableDebugLogging) {
+				console.log('📴 Core functionality disabled');
+			}
+		} catch (error) {
+			console.error('❌ Error disabling core functionality:', error);
+		}
+	}
+
+	/**
+	 * Force rescan of all files (public method for settings)
+	 */
+	async forceRescan(): Promise<void> {
+		try {
+			if (!this.frameIndexer) {
+				throw new Error('Frame indexer not initialized');
+			}
+
+			this.frameIndexer.clearCache();
+			await this.frameIndexer.scanAllExcalidrawFiles();
+			
+			const stats = this.frameIndexer.getCacheStats();
+			const message = `Rescan complete! Found ${stats.frameCount} frames in ${stats.size} files.`;
+			
+			if (this.settings.showDiagnosticsInNotices) {
+				new Notice(message, 3000);
+			}
+			
+			if (this.settings.enableDebugLogging) {
+				console.log('✅ Force rescan completed:', stats);
+			}
+		} catch (error) {
+			console.error('❌ Error during force rescan:', error);
+			throw error;
+		}
+	}
+
+	/**
 	 * Setup debug commands for monitoring and troubleshooting
-	 * Day 6: Enhanced with comprehensive diagnostics
+	 * Day 7: Enhanced with settings integration
 	 */
 	private setupDebugCommands(): void {
 		// Cache statistics command
@@ -83,14 +185,18 @@ export default class Excalink extends Plugin{
 			callback: () => {
 				try {
 					const stats = this.frameIndexer.getCacheStats();
-					// console.log('📊 Cache Statistics:', stats);
+					if (this.settings.enableDebugLogging) {
+						console.log('📊 Cache Statistics:', stats);
+					}
 					
 					const message = `Cache Statistics:\n` +
 						`Files: ${stats.size}\n` +
 						`Frames: ${stats.frameCount}\n` +
 						`Memory: ${stats.memoryUsage}`;
 					
-					new Notice(message, 5000);
+					if (this.settings.showDiagnosticsInNotices) {
+						new Notice(message, 5000);
+					}
 				} catch (error) {
 					console.error('❌ Error getting cache stats:', error);
 					new Notice('Error retrieving cache statistics');
@@ -105,7 +211,9 @@ export default class Excalink extends Plugin{
 			callback: () => {
 				try {
 					const diagnostics = this.frameIndexer.getDiagnostics();
-					// console.log('🔍 Plugin Diagnostics:', diagnostics);
+					if (this.settings.enableDebugLogging) {
+						console.log('🔍 Plugin Diagnostics:', diagnostics);
+					}
 					
 					const message = `Plugin Diagnostics:\n` +
 						`Initialized: ${diagnostics.isInitialized ? '✅' : '❌'}\n` +
@@ -113,7 +221,9 @@ export default class Excalink extends Plugin{
 						`Frames: ${diagnostics.totalFrames}\n` +
 						`Cache: ${diagnostics.cacheSize} entries`;
 					
-					new Notice(message, 7000);
+					if (this.settings.showDiagnosticsInNotices) {
+						new Notice(message, 7000);
+					}
 				} catch (error) {
 					console.error('❌ Error getting diagnostics:', error);
 					new Notice('Error retrieving diagnostics');
@@ -127,17 +237,12 @@ export default class Excalink extends Plugin{
 			name: 'Force Rescan All Files',
 			callback: async () => {
 				try {
-					// console.log('🔄 Force rescanning all Excalidraw files...');
+					if (this.settings.enableDebugLogging) {
+						console.log('🔄 Force rescanning all Excalidraw files...');
+					}
 					new Notice('Rescanning Excalidraw files...');
 					
-					this.frameIndexer.clearCache();
-					await this.frameIndexer.scanAllExcalidrawFiles();
-					
-					const stats = this.frameIndexer.getCacheStats();
-					const message = `Rescan complete! Found ${stats.frameCount} frames in ${stats.size} files.`;
-					
-					// console.log('✅ Force rescan completed');
-					new Notice(message, 3000);
+					await this.forceRescan();
 				} catch (error) {
 					console.error('❌ Error during force rescan:', error);
 					new Notice('Error during rescan. Check console for details.');
@@ -145,15 +250,20 @@ export default class Excalink extends Plugin{
 			}
 		});
 
-		// Comprehensive testing command (Day 6)
+		// Comprehensive testing command (Day 7)
 		this.addCommand({
 			id: 'run-comprehensive-tests',
 			name: 'Run Comprehensive Tests',
 			callback: () => {
 				try {
-					// console.log('🔬 Starting comprehensive plugin tests...');
+					if (this.settings.enableDebugLogging) {
+						console.log('🔬 Starting comprehensive plugin tests...');
+					}
 					new Notice('Running comprehensive tests...');
 					
+					if (!this.editorExtension) {
+						throw new Error('Editor extension not initialized');
+					}
 					const allTestsPassed = this.editorExtension.runComprehensiveTests();
 					
 					const message = allTestsPassed ? 
@@ -226,11 +336,13 @@ export default class Excalink extends Plugin{
 
 	/**
 	 * Plugin unload with enhanced cleanup
-	 * Day 6: Ensures all resources are properly released
+	 * Day 7: Ensures all resources are properly released
 	 */
 	onunload(): void {
 		try {
-			// console.log('👋 Excalink plugin unloading...');
+			if (this.settings.enableDebugLogging) {
+				console.log('👋 Excalink plugin unloading...');
+			}
 			
 			// Clean up frame indexer
 			if (this.frameIndexer) {
@@ -245,14 +357,18 @@ export default class Excalink extends Plugin{
 			if (this.editorExtension) {
 				try {
 					// The extension will be automatically cleaned up by Obsidian
-					// console.log('✅ Editor extension cleanup handled by Obsidian');
+					if (this.settings.enableDebugLogging) {
+						console.log('✅ Editor extension cleanup handled by Obsidian');
+					}
 				} catch (error) {
 					console.warn('⚠️ Error during editor extension cleanup:', error);
 				}
 			}
 			
 			this.isInitialized = false;
-			// console.log('✅ Excalink plugin unloaded successfully');
+			if (this.settings.enableDebugLogging) {
+				console.log('✅ Excalink plugin unloaded successfully');
+			}
 		} catch (error) {
 			console.error('❌ Error during plugin unload:', error);
 		}

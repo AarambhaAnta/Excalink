@@ -1,30 +1,37 @@
 import { FuzzySuggestModal, App } from "obsidian";
 import { FrameInfo } from "FrameIndexer";
+import { ExcalinkSettings } from "settings";
 
 /**
  * FrameSuggestModal - A fuzzy search modal for frame suggestions
  * Shows matching frame names when user types [[filename#
+ * Day 7: Enhanced with settings integration
  */
 export class FrameSuggestModal extends FuzzySuggestModal<FrameInfo> {
 	private frames: FrameInfo[];
 	private onSelect: (frame: FrameInfo) => void;
 	private filename: string;
 	private onCloseCallback?: () => void;
+	private settings: ExcalinkSettings;
 
 	constructor(
 		app: App,
 		frames: FrameInfo[],
 		filename: string,
 		onSelect: (frame: FrameInfo) => void,
+		settings: ExcalinkSettings
 	) {
 		super(app);
 		this.frames = frames;
 		this.filename = filename;
 		this.onSelect = onSelect;
+		this.settings = settings;
 
-// 		console.log(
-		// 	`🎯 FrameSuggestModal created for "${filename}" with ${frames.length} frames`,
-		// );
+		if (this.settings.enableDebugLogging) {
+			console.log(
+				`🎯 FrameSuggestModal created for "${filename}" with ${frames.length} frames`,
+			);
+		}
 
 		// Set modal properties
 		this.setPlaceholder(`Search frames in ${filename}...`);
@@ -44,11 +51,22 @@ export class FrameSuggestModal extends FuzzySuggestModal<FrameInfo> {
 
 	/**
 	 * Get all items to search through (required by FuzzySuggestModal)
-	 * Returns frames in reverse order of creation (newest first)
+	 * Returns frames in reverse order of creation (newest first) with limit
 	 */
 	getItems(): FrameInfo[] {
-		// Sort frames by index in descending order (newest/highest index first)
-		return [...this.frames].sort((a, b) => b.index - a.index);
+		// Sort frames by index order based on settings
+		let sortedFrames = [...this.frames];
+		
+		if (this.settings.showRecentFramesFirst) {
+			// Sort by index in descending order (newest/highest index first)
+			sortedFrames.sort((a, b) => b.index - a.index);
+		} else {
+			// Sort by index in ascending order (oldest first)
+			sortedFrames.sort((a, b) => a.index - b.index);
+		}
+		
+		// Limit the number of suggestions displayed
+		return sortedFrames.slice(0, this.settings.maxSuggestionsDisplayed);
 	}
 
 	/**
@@ -62,7 +80,9 @@ export class FrameSuggestModal extends FuzzySuggestModal<FrameInfo> {
 	 * Called when user selects an item (required by FuzzySuggestModal)
 	 */
 	onChooseItem(frame: FrameInfo): void {
-// 		console.log(`✅ User selected frame: "${frame.name}" (${frame.id})`);
+		if (this.settings.enableDebugLogging) {
+			console.log(`✅ User selected frame: "${frame.name}" (${frame.id})`);
+		}
 		this.onSelect(frame);
 		this.close();
 	}
@@ -78,9 +98,11 @@ export class FrameSuggestModal extends FuzzySuggestModal<FrameInfo> {
 		el.empty();
 		el.addClass("excalink-suggestion");
 
-		// Add frame icon
-		const iconEl = el.createDiv({ cls: "excalink-suggestion-icon" });
-		iconEl.innerHTML = "🖼️";
+		// Add frame icon (based on settings)
+		if (this.settings.showFrameIcons) {
+			const iconEl = el.createDiv({ cls: "excalink-suggestion-icon" });
+			iconEl.innerHTML = "🖼️";
+		}
 
 		// Create content container
 		const contentEl = el.createDiv({ cls: "excalink-suggestion-content" });
@@ -91,13 +113,17 @@ export class FrameSuggestModal extends FuzzySuggestModal<FrameInfo> {
 		});
 		this.renderMatchedText(nameEl, frame.name, match.matches);
 
-		// File info (subtitle)
-		const fileEl = contentEl.createDiv({
-			cls: "excalink-suggestion-note",
-			text: `in ${this.filename}`,
-		});
+		// File info (subtitle) - based on settings
+		if (this.settings.showFileContext) {
+			const fileEl = contentEl.createDiv({
+				cls: "excalink-suggestion-note",
+				text: `in ${this.filename}`,
+			});
+		}
 
-// 		console.log(`🎨 Rendered suggestion for frame: "${frame.name}"`);
+		if (this.settings.enableDebugLogging) {
+			console.log(`🎨 Rendered suggestion for frame: "${frame.name}"`);
+		}
 	}
 
 	/**
@@ -152,18 +178,25 @@ export class FrameSuggestModal extends FuzzySuggestModal<FrameInfo> {
 			this.titleEl.setText(`Frames in ${this.filename}`);
 		}
 
-		// Add custom CSS class for styling
+		// Add custom CSS class for styling based on theme setting
 		this.modalEl.addClass("excalink-modal");
+		if (this.settings.modalTheme === 'minimal') {
+			this.modalEl.addClass("excalink-modal-minimal");
+		}
 
-// 		console.log(`🚀 FrameSuggestModal opened for "${this.filename}"`);
+		if (this.settings.enableDebugLogging) {
+			console.log(`🚀 FrameSuggestModal opened for "${this.filename}"`);
+		}
 	}
 
 	/**
 	 * Called when modal is closed - properly extends parent cleanup
-	 * Day 6: Enhanced with comprehensive error handling
+	 * Day 7: Enhanced with settings integration
 	 */
 	onClose(): void {
-// 		console.log(`👋 FrameSuggestModal closing for "${this.filename}"`);
+		if (this.settings.enableDebugLogging) {
+			console.log(`👋 FrameSuggestModal closing for "${this.filename}"`);
+		}
 		
 		try {
 			// Call our custom callback first
