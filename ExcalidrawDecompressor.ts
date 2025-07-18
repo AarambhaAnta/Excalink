@@ -11,31 +11,31 @@ export class ExcalidrawDecompressor{
      */
     static decompress(compressedData: string): any{
         try {
-            console.log('🗜️ Starting lz-string decompression...');
+            // console.log('🗜️ Starting lz-string decompression...');
 
             // Clean the input data - remove all whitespace including newlines
             const cleanData = compressedData.replace(/\s/g, '');
-            console.log(`📏 Compressed data length: ${cleanData.length} characters`);
+            // console.log(`📏 Compressed data length: ${cleanData.length} characters`);
 
             // Try Base64 decompression first (confirmed working method)
             try {
-                console.log('🔄 Trying decompressFromBase64 (primary method)...');
+                // console.log('🔄 Trying decompressFromBase64 (primary method)...');
                 const decompressed = LZString.decompressFromBase64(cleanData);
 
                 if (decompressed && decompressed.length > 50) {
-                    console.log(`✅ Sucess with decompressFromBase64!`);
-                    console.log(`📏 Decompressed data length: ${decompressed.length} characters`);
+                    // console.log(`✅ Sucess with decompressFromBase64!`);
+                    // console.log(`📏 Decompressed data length: ${decompressed.length} characters`);
 
                     const parsed = JSON.parse(decompressed);
-                    console.log('✅ Sucessfully parsed decompressed JSON');
+                    // console.log('✅ Sucessfully parsed decompressed JSON');
                     return parsed;
                 }
             } catch (error) {
-                console.log(`❌ Base64 decompression failed: ${error.message}`);
+                // console.log(`❌ Base64 decompression failed: ${error.message}`);
             }
             
             // Fallback methods if Base64 fails
-            console.log('🔄 Trying fallback decompression methods...');
+            // console.log('🔄 Trying fallback decompression methods...');
             const fallbackMethods = [
                 () => LZString.decompressFromUTF16(cleanData),
                 () => LZString.decompressFromEncodedURIComponent(cleanData),
@@ -50,19 +50,19 @@ export class ExcalidrawDecompressor{
 
             for (let i = 0; i < fallbackMethods.length; i++){
                 try {
-                    console.log(`🔄 Trying ${methodNames[i]}...`);
+                    // console.log(`🔄 Trying ${methodNames[i]}...`);
                     const decompressed = fallbackMethods[i]();
 
                     if (decompressed && decompressed.length > 50) {
-                        console.log(`✅ Sucess with ${methodNames[i]}!`);
-                        console.log(`📏 Decompressed data length: ${decompressed.length} characters`);
+                        // console.log(`✅ Sucess with ${methodNames[i]}!`);
+                        // console.log(`📏 Decompressed data length: ${decompressed.length} characters`);
 
                         const parsed = JSON.parse(decompressed);
-                        console.log('✅ Sucessfully parsed decompressed JSON');
+                        // console.log('✅ Sucessfully parsed decompressed JSON');
                         return parsed;
                     }
                 } catch (error) {
-                    console.log(`❌ ${methodNames[i]} failed: `, error.message);
+                    // console.log(`❌ ${methodNames[i]} failed: `, error.message);
                     continue;
                 }
             }

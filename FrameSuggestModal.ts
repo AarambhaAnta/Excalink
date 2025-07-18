@@ -22,9 +22,9 @@ export class FrameSuggestModal extends FuzzySuggestModal<FrameInfo> {
 		this.filename = filename;
 		this.onSelect = onSelect;
 
-		console.log(
-			`🎯 FrameSuggestModal created for "${filename}" with ${frames.length} frames`,
-		);
+// 		console.log(
+		// 	`🎯 FrameSuggestModal created for "${filename}" with ${frames.length} frames`,
+		// );
 
 		// Set modal properties
 		this.setPlaceholder(`Search frames in ${filename}...`);
@@ -62,7 +62,7 @@ export class FrameSuggestModal extends FuzzySuggestModal<FrameInfo> {
 	 * Called when user selects an item (required by FuzzySuggestModal)
 	 */
 	onChooseItem(frame: FrameInfo): void {
-		console.log(`✅ User selected frame: "${frame.name}" (${frame.id})`);
+// 		console.log(`✅ User selected frame: "${frame.name}" (${frame.id})`);
 		this.onSelect(frame);
 		this.close();
 	}
@@ -97,7 +97,7 @@ export class FrameSuggestModal extends FuzzySuggestModal<FrameInfo> {
 			text: `in ${this.filename}`,
 		});
 
-		console.log(`🎨 Rendered suggestion for frame: "${frame.name}"`);
+// 		console.log(`🎨 Rendered suggestion for frame: "${frame.name}"`);
 	}
 
 	/**
@@ -155,7 +155,7 @@ export class FrameSuggestModal extends FuzzySuggestModal<FrameInfo> {
 		// Add custom CSS class for styling
 		this.modalEl.addClass("excalink-modal");
 
-		console.log(`🚀 FrameSuggestModal opened for "${this.filename}"`);
+// 		console.log(`🚀 FrameSuggestModal opened for "${this.filename}"`);
 	}
 
 	/**
@@ -163,7 +163,7 @@ export class FrameSuggestModal extends FuzzySuggestModal<FrameInfo> {
 	 * Day 6: Enhanced with comprehensive error handling
 	 */
 	onClose(): void {
-		console.log(`👋 FrameSuggestModal closing for "${this.filename}"`);
+// 		console.log(`👋 FrameSuggestModal closing for "${this.filename}"`);
 		
 		try {
 			// Call our custom callback first

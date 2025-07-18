@@ -73,7 +73,7 @@ export class ExcalinkViewPlugin implements PluginValue {
         this.frameIndexer = frameIndexer;
         this.app = app;
         this.currentView = view;
-        console.log('🎯 ExcalinkViewPlugin initialized');
+        // console.log('🎯 ExcalinkViewPlugin initialized');
     }
         /**
      * Called whenever the editor view updates (typing, cursor movement, etc.)
@@ -123,13 +123,13 @@ export class ExcalinkViewPlugin implements PluginValue {
             const lineText = line.text;
             const cursorInLine = cursor - line.from;
 
-            console.log(`🔍 Checking cursor position ${cursor}`);
+            // console.log(`🔍 Checking cursor position ${cursor}`);
 
             // Look for wikilink patterns around cursor
             const wikilinkMatch = this.findWikilinkAtCursor(lineText, cursorInLine);
 
             if (wikilinkMatch) {
-                console.log('🎯 Found wikilink pattern:', wikilinkMatch);
+                // console.log('🎯 Found wikilink pattern:', wikilinkMatch);
                 
                 // Only trigger if we have a filename and at least started typing after #
                 if (wikilinkMatch.filename && wikilinkMatch.fullMatch.includes('#')) {
@@ -138,7 +138,7 @@ export class ExcalinkViewPlugin implements PluginValue {
             } else {
                 // Close any existing modal if pattern is no longer present
                 if (this.currentModal) {
-                    console.log('❌ Pattern no longer matches, closing modal');
+                    // console.log('❌ Pattern no longer matches, closing modal');
                     this.currentModal.close();
                     this.currentModal = null;
                 }
@@ -237,11 +237,11 @@ export class ExcalinkViewPlugin implements PluginValue {
                 return;
             }
 
-            console.log('🎯 Detected wikilink pattern:');
-            console.log(`    📁 Filename: "${match.filename}"`);
-            console.log(`    🔖 Partial frame: "${match.partialFrame}"`);
-            console.log(`    📍 Position: ${match.startPos}-${match.endPos}`);
-            console.log(`    ✅ Complete: ${match.isComplete}`);
+            // console.log('🎯 Detected wikilink pattern:');
+            // console.log(`    📁 Filename: "${match.filename}"`);
+            // console.log(`    🔖 Partial frame: "${match.partialFrame}"`);
+            // console.log(`    📍 Position: ${match.startPos}-${match.endPos}`);
+            // console.log(`    ✅ Complete: ${match.isComplete}`);
 
             // Try different filename variations to find frames
             const possibleFilenames = this.generateFilenameVariations(match.filename);
@@ -265,7 +265,7 @@ export class ExcalinkViewPlugin implements PluginValue {
             }
 
             if (frames && frames.length > 0) {
-                console.log(`    🖼️ Available frames in "${matchedFilename}": [${frames.map(f => f?.name || 'unnamed').join(', ')}]`);
+                // console.log(`    🖼️ Available frames in "${matchedFilename}": [${frames.map(f => f?.name || 'unnamed').join(', ')}]`);
                 
                 // Filter frames based on partial input if provided
                 let matchingFrames = frames;
@@ -278,7 +278,7 @@ export class ExcalinkViewPlugin implements PluginValue {
                             typeof frame.name === 'string' &&
                             frame.name.toLowerCase().includes(cleanPartialFrame.toLowerCase())
                         );
-                        console.log(`    🎯 Matching frames for "${cleanPartialFrame}": [${matchingFrames.map(f => f.name).join(', ')}]`);
+//                         console.log(`    🎯 Matching frames for "${cleanPartialFrame}": [${matchingFrames.map(f => f.name).join(', ')}]`);
                     } catch (error) {
                         console.warn('⚠️ Error filtering frames:', error);
                         matchingFrames = frames; // Fallback to all frames
@@ -289,14 +289,14 @@ export class ExcalinkViewPlugin implements PluginValue {
                 if (matchingFrames.length > 0) {
                     this.showFrameSuggestModal(matchingFrames, matchedFilename, match);
                 } else {
-                    console.log(`    ❓ No frames match the partial input "${match.partialFrame}"`);
+//                     console.log(`    ❓ No frames match the partial input "${match.partialFrame}"`);
                 }
             } else {
-                console.log(`    ❌ No frames found for any variation of "${match.filename}"`);
-                console.log(`    🔍 Tried: ${possibleFilenames.join(', ')}`);
+//                 console.log(`    ❌ No frames found for any variation of "${match.filename}"`);
+//                 console.log(`    🔍 Tried: ${possibleFilenames.join(', ')}`);
                 
                 // Show a helpful message to the user
-                console.log(`    💡 Make sure the file "${match.filename}" exists and contains frames`);
+//                 console.log(`    💡 Make sure the file "${match.filename}" exists and contains frames`);
             }
         } catch (error) {
             console.error('❌ Error in handleWikilinkDetection:', error);
@@ -330,7 +330,7 @@ export class ExcalinkViewPlugin implements PluginValue {
                 return;
             }
 
-            console.log(`🎭 Opening FrameSuggestModal with ${frames.length} frames`);
+//             console.log(`🎭 Opening FrameSuggestModal with ${frames.length} frames`);
             
             // Close any existing modal first
             if (this.currentModal) {
@@ -354,7 +354,7 @@ export class ExcalinkViewPlugin implements PluginValue {
                     filename,
                     (selectedFrame) => {
                         try {
-                            console.log(`✅ Frame selected: "${selectedFrame?.name || 'unknown'}" (${selectedFrame?.id || 'no-id'})`);
+//                             console.log(`✅ Frame selected: "${selectedFrame?.name || 'unknown'}" (${selectedFrame?.id || 'no-id'})`);
                             this.currentModal = null;
                             
                             // Validate selected frame
@@ -382,7 +382,7 @@ export class ExcalinkViewPlugin implements PluginValue {
             modal.setOnCloseCallback(() => {
                 this.currentModal = null;
                 this.currentMatch = null;
-                console.log(`👋 FrameSuggestModal closed for "${filename}"`);
+//                 console.log(`👋 FrameSuggestModal closed for "${filename}"`);
             });
             
             // Open modal with error handling
@@ -453,7 +453,7 @@ export class ExcalinkViewPlugin implements PluginValue {
                 return;
             }
 
-            console.log(`🔧 Inserting frame link: "${filename}#^frame=${selectedFrame.name}"`);
+//             console.log(`🔧 Inserting frame link: "${filename}#^frame=${selectedFrame.name}"`);
             
             // Get current state with validation
             const { state } = this.currentView;
@@ -491,18 +491,18 @@ export class ExcalinkViewPlugin implements PluginValue {
             
             // Validate that the text is still as expected (handle edge cases)
             const currentText = lineText.substring(match.startPos, match.endPos);
-            console.log(`🔍 Current text at position: "${currentText}"`);
-            console.log(`🔍 Expected text: "${match.fullMatch}"`);
+//             console.log(`🔍 Current text at position: "${currentText}"`);
+//             console.log(`🔍 Expected text: "${match.fullMatch}"`);
             
             // If the text has changed, try to find the wikilink pattern again
             if (currentText !== match.fullMatch) {
-                console.log('⚠️ Text has changed, attempting to find current pattern...');
+//                 console.log('⚠️ Text has changed, attempting to find current pattern...');
                 try {
                     const cursorInLine = cursor - lineStart;
                     const newMatch = this.findWikilinkAtCursor(lineText, cursorInLine);
                     
                     if (newMatch && newMatch.filename === match.filename) {
-                        console.log('✅ Found updated pattern, using new positions');
+//                         console.log('✅ Found updated pattern, using new positions');
                         replaceFrom = lineStart + newMatch.startPos;
                         replaceTo = lineStart + newMatch.endPos;
                     } else {
@@ -533,7 +533,7 @@ export class ExcalinkViewPlugin implements PluginValue {
             let finalFrameLink = frameLink;
             
             if (isIncomplete) {
-                console.log('🔧 Detected incomplete link, will complete it');
+//                 console.log('🔧 Detected incomplete link, will complete it');
                 try {
                     // For incomplete links, we might need to add the closing ]]
                     const currentLineText = lineText;
@@ -542,7 +542,7 @@ export class ExcalinkViewPlugin implements PluginValue {
                     // If there are already ]] after the cursor, don't add them
                     if (afterCursor.startsWith(']]')) {
                         finalFrameLink = `[[${originalFilename}#^frame=${sanitizedFrameName}`;
-                        console.log('🔧 Found existing ]], will not duplicate');
+//                         console.log('🔧 Found existing ]], will not duplicate');
                     }
                 } catch (error) {
                     console.warn('⚠️ Error checking for existing closing brackets:', error);
@@ -550,9 +550,9 @@ export class ExcalinkViewPlugin implements PluginValue {
                 }
             }
             
-            console.log(`📝 Replacing text from ${replaceFrom} to ${replaceTo} with: "${finalFrameLink}"`);
-            console.log(`🎯 Original filename preserved: "${originalFilename}"`);
-            console.log(`🔗 Using Obsidian block reference format: ^frame=${sanitizedFrameName}`);
+//             console.log(`📝 Replacing text from ${replaceFrom} to ${replaceTo} with: "${finalFrameLink}"`);
+//             console.log(`🎯 Original filename preserved: "${originalFilename}"`);
+//             console.log(`🔗 Using Obsidian block reference format: ^frame=${sanitizedFrameName}`);
             
             // Validate replacement bounds
             if (replaceFrom < 0 || replaceTo < 0 || replaceFrom > state.doc.length || replaceTo > state.doc.length) {
@@ -577,8 +577,8 @@ export class ExcalinkViewPlugin implements PluginValue {
                 // Apply the transaction
                 this.currentView.dispatch(transaction);
                 
-                console.log(`✅ Successfully inserted frame link: "${finalFrameLink}"`);
-                console.log(`🎯 Cursor positioned at: ${replaceFrom + finalFrameLink.length}`);
+//                 console.log(`✅ Successfully inserted frame link: "${finalFrameLink}"`);
+//                 console.log(`🎯 Cursor positioned at: ${replaceFrom + finalFrameLink.length}`);
             } catch (error) {
                 console.error('❌ Error applying text transaction:', error);
                 return;
@@ -594,7 +594,7 @@ export class ExcalinkViewPlugin implements PluginValue {
      * Day 6: Enhanced with comprehensive testing scenarios
      */
     public testTextReplacement(): void {
-        console.log('🧪 Testing text replacement logic...');
+//         console.log('🧪 Testing text replacement logic...');
         
         try {
             // Test scenario 1: Complete wikilink
@@ -613,9 +613,9 @@ export class ExcalinkViewPlugin implements PluginValue {
                 index: 10 // Recent frame (higher index)
             };
             
-            console.log('📝 Test 1 - Complete link:', testMatch1);
-            console.log('🖼️ Test 1 - Frame:', testFrame1);
-            console.log('🔗 Test 1 - Expected: [[test#^frame=test-frame-1]]');
+//             console.log('📝 Test 1 - Complete link:', testMatch1);
+//             console.log('🖼️ Test 1 - Frame:', testFrame1);
+//             console.log('🔗 Test 1 - Expected: [[test#^frame=test-frame-1]]');
             
             // Test scenario 2: Incomplete wikilink
             const testMatch2: WikilinkMatch = {
@@ -633,9 +633,9 @@ export class ExcalinkViewPlugin implements PluginValue {
                 index: 5 // Older frame (lower index)
             };
             
-            console.log('📝 Test 2 - Incomplete link:', testMatch2);
-            console.log('🖼️ Test 2 - Frame:', testFrame2);
-            console.log('🔗 Test 2 - Expected: [[docs#^frame=frame-name-2]]');
+//             console.log('📝 Test 2 - Incomplete link:', testMatch2);
+//             console.log('🖼️ Test 2 - Frame:', testFrame2);
+//             console.log('🔗 Test 2 - Expected: [[docs#^frame=frame-name-2]]');
             
             // Test scenario 3: Edge case with special characters
             const testMatch3: WikilinkMatch = {
@@ -653,12 +653,12 @@ export class ExcalinkViewPlugin implements PluginValue {
                 index: 15 // Most recent frame (highest index)
             };
             
-            console.log('📝 Test 3 - Special characters:', testMatch3);
-            console.log('🖼️ Test 3 - Frame:', testFrame3);
-            console.log('🔗 Test 3 - Expected: [[file-name.test#^frame=special-frame with brackets]]');
+//             console.log('📝 Test 3 - Special characters:', testMatch3);
+//             console.log('🖼️ Test 3 - Frame:', testFrame3);
+//             console.log('🔗 Test 3 - Expected: [[file-name.test#^frame=special-frame with brackets]]');
             
-            console.log('✅ All test scenarios defined successfully');
-            console.log('💡 Note: Actual insertion would be tested in a real editor environment');
+//             console.log('✅ All test scenarios defined successfully');
+//             console.log('💡 Note: Actual insertion would be tested in a real editor environment');
             
         } catch (error) {
             console.error('❌ Error in test setup:', error);
@@ -670,30 +670,30 @@ export class ExcalinkViewPlugin implements PluginValue {
      * Day 6: Tests all major functionality for robustness
      */
     public runComprehensiveTests(): boolean {
-        console.log('🔬 Running comprehensive plugin tests...');
+//         console.log('🔬 Running comprehensive plugin tests...');
         let allTestsPassed = true;
 
         try {
             // Test 1: FrameIndexer validation
-            console.log('🧪 Test 1: FrameIndexer validation');
+//             console.log('🧪 Test 1: FrameIndexer validation');
             if (!this.frameIndexer) {
                 console.error('❌ FrameIndexer not initialized');
                 allTestsPassed = false;
             } else {
-                console.log('✅ FrameIndexer initialized');
+//                 console.log('✅ FrameIndexer initialized');
             }
 
             // Test 2: App instance validation
-            console.log('🧪 Test 2: App instance validation');
+//             console.log('🧪 Test 2: App instance validation');
             if (!this.app) {
                 console.error('❌ App instance not available');
                 allTestsPassed = false;
             } else {
-                console.log('✅ App instance available');
+//                 console.log('✅ App instance available');
             }
 
             // Test 3: Pattern detection validation
-            console.log('🧪 Test 3: Pattern detection validation');
+//             console.log('🧪 Test 3: Pattern detection validation');
             const testPatterns = [
                 { input: 'Some text [[file#frame]] more text', pos: 15, expected: true },
                 { input: '[[incomplete#', pos: 12, expected: true },
@@ -709,7 +709,7 @@ export class ExcalinkViewPlugin implements PluginValue {
                     const hasPattern = result !== null;
                     if (hasPattern === test.expected) {
                         patternTestsPassed++;
-                        console.log(`✅ Pattern test passed: "${test.input}" at ${test.pos}`);
+//                         console.log(`✅ Pattern test passed: "${test.input}" at ${test.pos}`);
                     } else {
                         console.error(`❌ Pattern test failed: "${test.input}" at ${test.pos}. Expected: ${test.expected}, Got: ${hasPattern}`);
                         allTestsPassed = false;
@@ -719,15 +719,15 @@ export class ExcalinkViewPlugin implements PluginValue {
                     allTestsPassed = false;
                 }
             }
-            console.log(`📊 Pattern tests: ${patternTestsPassed}/${testPatterns.length} passed`);
+//             console.log(`📊 Pattern tests: ${patternTestsPassed}/${testPatterns.length} passed`);
 
             // Test 4: Filename variation generation
-            console.log('🧪 Test 4: Filename variation generation');
+//             console.log('🧪 Test 4: Filename variation generation');
             try {
                 const testFilename = 'example.excalidraw';
                 const variations = this.generateFilenameVariations(testFilename);
                 if (variations && variations.length > 0) {
-                    console.log(`✅ Generated ${variations.length} filename variations:`, variations);
+//                     console.log(`✅ Generated ${variations.length} filename variations:`, variations);
                 } else {
                     console.error('❌ No filename variations generated');
                     allTestsPassed = false;
@@ -738,7 +738,7 @@ export class ExcalinkViewPlugin implements PluginValue {
             }
 
             // Test 5: Partial frame cleaning
-            console.log('🧪 Test 5: Partial frame cleaning');
+//             console.log('🧪 Test 5: Partial frame cleaning');
             const cleaningTests = [
                 { input: '^frame=test', expected: 'test' },
                 { input: '^test', expected: 'test' },
@@ -750,7 +750,7 @@ export class ExcalinkViewPlugin implements PluginValue {
                 try {
                     const result = this.cleanPartialFrame(test.input);
                     if (result === test.expected) {
-                        console.log(`✅ Cleaning test passed: "${test.input}" -> "${result}"`);
+//                         console.log(`✅ Cleaning test passed: "${test.input}" -> "${result}"`);
                     } else {
                         console.error(`❌ Cleaning test failed: "${test.input}". Expected: "${test.expected}", Got: "${result}"`);
                         allTestsPassed = false;
@@ -761,7 +761,7 @@ export class ExcalinkViewPlugin implements PluginValue {
                 }
             }
 
-            console.log(`🏁 Comprehensive tests completed. All passed: ${allTestsPassed ? '✅' : '❌'}`);
+//             console.log(`🏁 Comprehensive tests completed. All passed: ${allTestsPassed ? '✅' : '❌'}`);
             return allTestsPassed;
 
         } catch (error) {
@@ -814,7 +814,7 @@ export class ExcalinkViewPlugin implements PluginValue {
         this.currentView = null;
         this.currentMatch = null;
         
-        console.log('🧹 ExcalinkViewPlugin destroyed');
+//         console.log('🧹 ExcalinkViewPlugin destroyed');
     }
 }
 

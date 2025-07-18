@@ -42,7 +42,7 @@ export class FrameIndexer{
      */
     async scanAllExcalidrawFiles(): Promise<void>{
         try {
-            console.log('🔍 Starting comprehensive Excalidraw file scan with caching...');
+//             console.log('🔍 Starting comprehensive Excalidraw file scan with caching...');
 
             const markdownFiles = this.vault.getMarkdownFiles();
             const excalidrawFiles = markdownFiles.filter(file => {
@@ -54,7 +54,7 @@ export class FrameIndexer{
                        file.basename;
             });
 
-            console.log(`Found ${excalidrawFiles.length} valid Excalidraw files`);
+//             console.log(`Found ${excalidrawFiles.length} valid Excalidraw files`);
 
             // Clear the frame index but keep cache for performance
             this.frameIndex = {};
@@ -80,12 +80,12 @@ export class FrameIndexer{
                 }
             }
 
-            console.log(`📊 Scan complete:`);
-            console.log(`   ✅ Processed: ${processedFiles} files`);
-            console.log(`   💾 Cache hits: ${cacheHits}`); 
-            console.log(`   🔄 Cache misses: ${cacheMisses}`);
-            console.log(`   ⚠️ Skipped: ${skippedFiles} files`);
-            console.log('📜 Final frame index:', this.frameIndex);
+//             console.log(`📊 Scan complete:`);
+//             console.log(`   ✅ Processed: ${processedFiles} files`);
+//             console.log(`   💾 Cache hits: ${cacheHits}`); 
+//             console.log(`   🔄 Cache misses: ${cacheMisses}`);
+//             console.log(`   ⚠️ Skipped: ${skippedFiles} files`);
+//             console.log('📜 Final frame index:', this.frameIndex);
             
             this.isInitialized = true;
         } catch (error) {
@@ -115,20 +115,20 @@ export class FrameIndexer{
             const cacheEntry = this.frameCache.get(filePath);
             
             if (cacheEntry && cacheEntry.lastModified === currentModTime) {
-                console.log(`💾 Cache hit for ${file.basename}`);
+//                 console.log(`💾 Cache hit for ${file.basename}`);
                 
                 // Use cached frames
                 if (cacheEntry.frames.length > 0) {
                     this.frameIndex[file.basename] = cacheEntry.frames;
-                    console.log(`📃 ${file.basename}: [${cacheEntry.frames.map(f => f.name).join(', ')}] (cached)`);
+//                     console.log(`📃 ${file.basename}: [${cacheEntry.frames.map(f => f.name).join(', ')}] (cached)`);
                 } else {
-                    console.log(`📄 ${file.basename}: No frames (cached)`);
+//                     console.log(`📄 ${file.basename}: No frames (cached)`);
                 }
                 
                 return true; // From cache
             }
             
-            console.log(`🔄 Cache miss for ${file.basename}, processing file...`);
+//             console.log(`🔄 Cache miss for ${file.basename}, processing file...`);
             
             // Read and process the file with enhanced error handling
             const content = await this.vault.read(file);
@@ -157,9 +157,9 @@ export class FrameIndexer{
             // Update frame index
             if (frames.length > 0) {
                 this.frameIndex[file.basename] = frames;
-                console.log(`📃 ${file.basename}: [${frames.map(f => f.name).join(', ')}] (processed)`);
+//                 console.log(`📃 ${file.basename}: [${frames.map(f => f.name).join(', ')}] (processed)`);
             } else {
-                console.log(`📄 ${file.basename}: No frames found`);
+//                 console.log(`📄 ${file.basename}: No frames found`);
             }
             
             return false; // Not from cache
@@ -170,7 +170,7 @@ export class FrameIndexer{
             // Try to maintain previous cache entry if available
             const cacheEntry = this.frameCache.get(file?.path);
             if (cacheEntry) {
-                console.log(`🔄 Using previous cache entry for ${file?.basename}`);
+//                 console.log(`🔄 Using previous cache entry for ${file?.basename}`);
                 if (cacheEntry.frames.length > 0) {
                     this.frameIndex[file.basename] = cacheEntry.frames;
                 }
@@ -222,50 +222,50 @@ export class FrameIndexer{
                 jsonMatch = content.match(/```\n([\s\S]*?)\n```/);
                 if (jsonMatch && jsonMatch[1].trim().startsWith('{')) {
                     isCompressed = false;
-                    console.log(`🔍 Found generic code block with JSON-like content${filename ? ` in ${filename}` : ''}`);
+//                     console.log(`🔍 Found generic code block with JSON-like content${filename ? ` in ${filename}` : ''}`);
                 }
             }
 
             if (!jsonMatch) {
-                console.log(`📄 No JSON block found${filename ? ` in ${filename}` : ''} - may be frame-less Excalidraw file`);
+//                 console.log(`📄 No JSON block found${filename ? ` in ${filename}` : ''} - may be frame-less Excalidraw file`);
                 return [];
             }
 
-            console.log(`✅ ${isCompressed ? 'Compressed' : 'Regular'} JSON block found${filename ? ` in ${filename}` : ''}`);
+//             console.log(`✅ ${isCompressed ? 'Compressed' : 'Regular'} JSON block found${filename ? ` in ${filename}` : ''}`);
 
             let excalidrawData;
 
             if (isCompressed) {
-                console.log('🗜️ Compressed format detected - decompressing...');
+//                 console.log('🗜️ Compressed format detected - decompressing...');
                 try {
                     excalidrawData = ExcalidrawDecompressor.decompress(jsonMatch[1]);
-                    console.log('✅ Successfully decompressed data');
+//                     console.log('✅ Successfully decompressed data');
                 } catch (error) {
                     console.error(`❌ Decompression failed${filename ? ` for ${filename}` : ''}:`, error.message);
 
                     // Try treating as regular JSON as fallback
                     try {
-                        console.log('🔄 Trying fallback: parsing as regular JSON...');
+//                         console.log('🔄 Trying fallback: parsing as regular JSON...');
                         excalidrawData = JSON.parse(jsonMatch[1]);
-                        console.log('✅ Fallback successful - was actually uncompressed');
+//                         console.log('✅ Fallback successful - was actually uncompressed');
                     } catch (fallbackError) {
                         console.error(`❌ Both compression and JSON parsing failed${filename ? ` for ${filename}` : ''}`);
                         return [];
                     }
                 }
             } else {
-                console.log('📄 Regular JSON format detected');
+//                 console.log('📄 Regular JSON format detected');
                 try {
                     excalidrawData = JSON.parse(jsonMatch[1]);
-                    console.log('✅ Successfully parsed JSON');
+//                     console.log('✅ Successfully parsed JSON');
                 } catch (error) {
                     console.error(`❌ JSON parsing failed${filename ? ` for ${filename}` : ''}:`, error.message);
                     
                     // Try decompression as fallback
                     try {
-                        console.log('🔄 Trying fallback: decompression...');
+//                         console.log('🔄 Trying fallback: decompression...');
                         excalidrawData = ExcalidrawDecompressor.decompress(jsonMatch[1]);
-                        console.log('✅ Fallback successful - was actually compressed');
+//                         console.log('✅ Fallback successful - was actually compressed');
                     } catch (fallbackError) {
                         console.error(`❌ Both JSON parsing and decompression failed${filename ? ` for ${filename}` : ''}`);
                         return [];
@@ -296,14 +296,14 @@ export class FrameIndexer{
         try {
             // Check for elements array
             if (!excalidrawData.elements || !Array.isArray(excalidrawData.elements)) {
-                console.log(`📄 No elements array found${filename ? ` in ${filename}` : ''} - empty or frame-less drawing`);
+//                 console.log(`📄 No elements array found${filename ? ` in ${filename}` : ''} - empty or frame-less drawing`);
                 return [];
             }
 
             const frames: FrameInfo[] = [];
             const elements = excalidrawData.elements;
 
-            console.log(`🔍 Processing ${elements.length} elements${filename ? ` in ${filename}` : ''}...`);
+//             console.log(`🔍 Processing ${elements.length} elements${filename ? ` in ${filename}` : ''}...`);
 
             for (let i = 0; i < elements.length; i++) {
                 try {
@@ -334,7 +334,7 @@ export class FrameIndexer{
                             index: i // Store the position in elements array for ordering
                         });
 
-                        console.log(`🖼️ Found frame: "${frameName}" (${frameId})${frameComment ? ` - ${frameComment}` : ''}`);
+//                         console.log(`🖼️ Found frame: "${frameName}" (${frameId})${frameComment ? ` - ${frameComment}` : ''}`);
                     }
                 } catch (elementError) {
                     console.warn(`⚠️ Error processing element ${i}${filename ? ` in ${filename}` : ''}:`, elementError);
@@ -342,7 +342,7 @@ export class FrameIndexer{
                 }
             }
 
-            console.log(`✅ Extracted ${frames.length} frames total${filename ? ` from ${filename}` : ''}`);
+//             console.log(`✅ Extracted ${frames.length} frames total${filename ? ` from ${filename}` : ''}`);
             return frames;
 
         } catch (error) {
@@ -380,7 +380,7 @@ export class FrameIndexer{
             return;
         }
 
-        console.log(`🔄 File modified: ${file.basename}, updating cache...`);
+//         console.log(`🔄 File modified: ${file.basename}, updating cache...`);
         
         try {
             // Force re-processing by removing from cache first
@@ -389,7 +389,7 @@ export class FrameIndexer{
             // Re-extract frames
             await this.extractFramesFromFileWithCache(file);
             
-            console.log(`✅ Successfully updated cache for ${file.basename}`);
+//             console.log(`✅ Successfully updated cache for ${file.basename}`);
         } catch (error) {
             console.error(`❌ Error handling file modification for ${file.path}:`, error);
         }
@@ -403,7 +403,7 @@ export class FrameIndexer{
             return;
         }
 
-        console.log(`🗑️ File deleted: ${file.basename}, cleaning up cache...`);
+//         console.log(`🗑️ File deleted: ${file.basename}, cleaning up cache...`);
         
         try {
             // Remove from cache
@@ -414,7 +414,7 @@ export class FrameIndexer{
                 delete this.frameIndex[file.basename];
             }
             
-            console.log(`✅ Successfully cleaned up cache for ${file.basename}`);
+//             console.log(`✅ Successfully cleaned up cache for ${file.basename}`);
         } catch (error) {
             console.error(`❌ Error during file deletion cleanup for ${file.path}:`, error);
         }
@@ -428,7 +428,7 @@ export class FrameIndexer{
             return;
         }
 
-        console.log(`📝 File renamed: ${oldPath} → ${file.path}`);
+//         console.log(`📝 File renamed: ${oldPath} → ${file.path}`);
         
         try {
             // Get old basename
@@ -440,16 +440,16 @@ export class FrameIndexer{
                 if (oldBasename) {
                     delete this.frameIndex[oldBasename];
                 }
-                console.log(`🧹 Cleaned up old file: ${oldBasename}`);
+//                 console.log(`🧹 Cleaned up old file: ${oldBasename}`);
             }
             
             // If new file is an Excalidraw file, process it
             if (file.path.endsWith('.excalidraw.md')) {
                 await this.extractFramesFromFileWithCache(file);
-                console.log(`✅ Processed new file: ${file.basename}`);
+//                 console.log(`✅ Processed new file: ${file.basename}`);
             }
             
-            console.log(`✅ Successfully handled rename for ${file.basename}`);
+//             console.log(`✅ Successfully handled rename for ${file.basename}`);
         } catch (error) {
             console.error(`❌ Error handling file rename from ${oldPath} to ${file.path}:`, error);
         }
@@ -489,9 +489,9 @@ export class FrameIndexer{
      */
     clearCache(): void {
         try {
-            console.log('🧹 Clearing frame cache...');
+//             console.log('🧹 Clearing frame cache...');
             this.frameCache.clear();
-            console.log('✅ Frame cache cleared successfully');
+//             console.log('✅ Frame cache cleared successfully');
         } catch (error) {
             console.error('❌ Error clearing cache:', error);
         }
