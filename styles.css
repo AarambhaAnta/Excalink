@@ -1,8 +1,61 @@
-/*
+/* Excalink Plugin Styles */
 
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
+/* Frame Suggestion Modal Styles */
+.excalink-suggestion {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    gap: 8px;
+    position: relative;
+}
 
-If your plugin does not need CSS, delete this file.
+.excalink-suggestion-icon {
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
+    flex-shrink: 0;
+}
 
-*/
+.excalink-suggestion-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.excalink-suggestion-title {
+    font-weight: 500;
+    color: var(--text-normal);
+    margin-bottom: 2px;
+}
+
+.excalink-suggestion-note {
+    font-size: 0.85em;
+    color: var(--text-muted);
+    opacity: 0.8;
+}
+
+/* Highlight matching text in suggestions */
+.excalink-suggestion .suggestion-flair {
+    background-color: var(--text-accent);
+    color: var(--text-on-accent);
+    padding: 1px 3px;
+    border-radius: 3px;
+    font-weight: 600;
+}
+
+/* Modal styling improvements */
+.modal.excalink-modal .modal-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.modal.excalink-modal .modal-title::before {
+    content: "🖼️";
+    font-size: 18px;
+}
+
+/* Input placeholder styling */
+.prompt-input::placeholder {
+    color: var(--text-muted);
+    opacity: 0.7;
+}

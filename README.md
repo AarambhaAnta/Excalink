@@ -4,18 +4,29 @@ An Obsidian plugin that enables smart auto-suggestion of frame names from `.exca
 
 ## Features
 
+## Features
+
 - 🔍 **Smart Frame Detection**: Automatically scans all `.excalidraw.md` files in your vault
-- 🎯 **Real-time Pattern Detection**: Detects `[[filename#` typing patterns in the editor and logs detected patterns and matching frames to the console
+- 🎯 **Real-time Pattern Detection**: Detects `[[filename#` typing patterns in the editor
+- 🎭 **Fuzzy Search Modal**: Shows interactive frame suggestions with fuzzy matching
+- 🖼️ **Frame Preview**: Visual frame suggestions with icons and file context
+- 🔗 **Auto-completion**: Automatically replaces partial links with complete frame references
 - 🗜️ **Format Support**: Handles both compressed and regular Excalidraw formats
 - 🔧 **Smart Filename Matching**: Supports multiple filename variations and formats
+- ⚡ **Debounced Input**: Optimized performance with intelligent timing
+- 🎯 **Cursor Management**: Preserves cursor position and handles edge cases gracefully
+- 💾 **Performance Caching**: Intelligent caching system to avoid repeated file reads
+- 📡 **File Watching**: Automatically updates frame index when files change
 - 📝 **Console Debugging**: Detailed logging of detected patterns and matching frames
 
 ## How to use
 
 1. Create frames in your Excalidraw drawings and give them names
 2. When typing `[[filename#` in any note, the plugin detects the pattern in real-time
-3. Check the developer console to see detected patterns and matching frames
-4. *Coming in Day 3*: Visual suggestion popup with frame names
+3. A fuzzy search modal appears showing all matching frames from that file
+4. Use ↑↓ to navigate, ↵ to select, or Esc to dismiss
+5. Selecting a frame automatically inserts the complete link: `[[filename#^frame=frameName]]`
+6. The cursor is positioned after the inserted link for continued editing
 
 ## Installation
 
@@ -33,8 +44,10 @@ An Obsidian plugin that enables smart auto-suggestion of frame names from `.exca
 ## Roadmap
 
 - [x] Day 1: Vault scanning & frame extraction
-- [x] Day 2: Editor integration & pattern detection
-- [ ] Day 3: Auto-suggestion UI & file watching
+- [x] Day 2: Editor integration & pattern detection  
+- [x] Day 3: Auto-suggestion modal with fuzzy search
+- [x] Day 4: Frame text replacement with Obsidian block reference format (`#^frame=frameName`)
+- [ ] Day 5+: File watching & performance optimizations
 
 ## License
 
