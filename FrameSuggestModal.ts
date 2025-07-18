@@ -11,7 +11,7 @@ export class FrameSuggestModal extends FuzzySuggestModal<FrameInfo> {
 	private filename: string;
 
 	constructor(
-		app: any,
+		app: App,
 		frames: FrameInfo[],
 		filename: string,
 		onSelect: (frame: FrameInfo) => void,
