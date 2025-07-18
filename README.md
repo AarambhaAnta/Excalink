@@ -6,16 +6,20 @@ An Obsidian plugin that enables smart auto-suggestion of frame names from `.exca
 
 - 🔍 **Smart Frame Detection**: Automatically scans all `.excalidraw.md` files in your vault
 - 🎯 **Real-time Pattern Detection**: Detects `[[filename#` typing patterns in the editor
-- 🗜️ **Format Support**: Handles both compressed and regular Excalidraw formats
+- 🎭 **Fuzzy Search Modal**: Shows interactive frame suggestions with fuzzy matching
+- �️ **Frame Preview**: Visual frame suggestions with icons and file context
+- �🗜️ **Format Support**: Handles both compressed and regular Excalidraw formats
 - 🔧 **Smart Filename Matching**: Supports multiple filename variations and formats
+- ⚡ **Debounced Input**: Optimized performance with intelligent timing
 - 📝 **Console Debugging**: Detailed logging of detected patterns and matching frames
 
 ## How to use
 
 1. Create frames in your Excalidraw drawings and give them names
 2. When typing `[[filename#` in any note, the plugin detects the pattern in real-time
-3. Check the developer console to see detected patterns and matching frames
-4. *Coming in Day 3*: Visual suggestion popup with frame names
+3. A fuzzy search modal appears showing all matching frames from that file
+4. Use ↑↓ to navigate, ↵ to select, or Esc to dismiss
+5. Frames are highlighted with fuzzy matching for easy identification
 
 ## Installation
 
@@ -33,8 +37,9 @@ An Obsidian plugin that enables smart auto-suggestion of frame names from `.exca
 ## Roadmap
 
 - [x] Day 1: Vault scanning & frame extraction
-- [x] Day 2: Editor integration & pattern detection
-- [ ] Day 3: Auto-suggestion UI & file watching
+- [x] Day 2: Editor integration & pattern detection  
+- [x] Day 3: Auto-suggestion modal with fuzzy search
+- [ ] Day 4+: Frame text replacement & file watching
 
 ## License
 
