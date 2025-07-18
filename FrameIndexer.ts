@@ -149,7 +149,7 @@ export class FrameIndexer{
                 console.log('🗜️ Compressed format detected - need to decompress first');
                 try {
                     excalidrawData = ExcalidrawDecompressor.decompress(jsonMatch[1]);
-                    console.log('✅ Sucessfully decompressed data');
+                    console.log('✅ Successfully decompressed data');
                 } catch (error) {
                     console.log('❌ Decompression failed: ', error);
 
