@@ -15,7 +15,7 @@ export default class Excalink extends Plugin{
 
 		// Initialize editor extension (Day 2)
 		console.log('🎯 Setting up editor extension...');
-		this.editorExtension = new EditorExtension(this.frameIndexer);
+		this.editorExtension = new EditorExtension(this.frameIndexer, this.app);
 		this.registerEditorExtension(this.editorExtension.getExtension());
 
 		console.log('✅ Excalink plugin loaded with editor integration!');
