@@ -14,9 +14,6 @@ An Obsidian plugin that enables smart auto-suggestion of frame names from `.exca
 - ⚡ **Debounced Input**: Optimized performance with intelligent timing
 - 🎯 **Cursor Management**: Preserves cursor position and handles edge cases gracefully
 - 📝 **Console Debugging**: Detailed logging of detected patterns and matching frames
-- �️ **Frame Preview**: Visual frame suggestions with icons and file context
-- �🗜️ **Format Support**: Handles both compressed and regular Excalidraw formats
-- 🔧 **Smart Filename Matching**: Supports multiple filename variations and formats
 - ⚡ **Debounced Input**: Optimized performance with intelligent timing
 - 📝 **Console Debugging**: Detailed logging of detected patterns and matching frames
 
