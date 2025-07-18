@@ -1,6 +1,8 @@
 import { Extension } from "@codemirror/state";
 import { EditorView, ViewUpdate, ViewPlugin, PluginValue } from "@codemirror/view";
 import { FrameIndexer } from "FrameIndexer";
+import { FrameSuggestModal } from "FrameSuggestModal";
+import { App } from "obsidian";
 
 /**
  * EditorExtension - Handles detection of [[filename# typing patterns
@@ -8,9 +10,11 @@ import { FrameIndexer } from "FrameIndexer";
  */
 export class EditorExtension {
     private frameIndexer: FrameIndexer;
+    private app: App;
 
-    constructor(frameIndexer: FrameIndexer) {
+    constructor(frameIndexer: FrameIndexer, app: App) {
         this.frameIndexer = frameIndexer;
+        this.app = app;
     }
 
     /**
@@ -18,9 +22,10 @@ export class EditorExtension {
      */
     getExtension(): Extension {
         const frameIndexer = this.frameIndexer; // Capture in closure
+        const app = this.app;
 
         return ViewPlugin.define((view: EditorView) => {
-            return new ExcalinkViewPlugin(view, frameIndexer);
+            return new ExcalinkViewPlugin(view, frameIndexer, app);
         });
     }
 }
@@ -30,9 +35,13 @@ export class EditorExtension {
  */
 export class ExcalinkViewPlugin implements PluginValue {
     private frameIndexer: FrameIndexer;
+    private app: App;
+    private debounceTimer: NodeJS.Timeout | null = null;
+    private currentModal: FrameSuggestModal | null = null;
 
-    constructor(view: EditorView, frameIndexer: FrameIndexer) {
+    constructor(view: EditorView, frameIndexer: FrameIndexer, app: App) {
         this.frameIndexer = frameIndexer;
+        this.app = app;
         console.log('🎯 ExcalinkViewPlugin initialized');
     }
     /**
@@ -42,7 +51,16 @@ export class ExcalinkViewPlugin implements PluginValue {
         // Process if there were document changes or selection changes
         if (update.docChanged || update.selectionSet) {
             console.log('📝 Update detected - checking for [[filename# pattern...');
-            this.checkForWikilinkPattern(update.view);
+            
+            // Clear any existing timer
+            if (this.debounceTimer) {
+                clearTimeout(this.debounceTimer);
+            }
+            
+            // Debounce the pattern checking to avoid excessive modal opening
+            this.debounceTimer = setTimeout(() => {
+                this.checkForWikilinkPattern(update.view);
+            }, 300); // 300ms debounce
         }
     }
 
@@ -66,7 +84,18 @@ export class ExcalinkViewPlugin implements PluginValue {
 
             if (wikilinkMatch) {
                 console.log('🎯 Found wikilink pattern:', wikilinkMatch);
-                this.handleWikilinkDetection(wikilinkMatch);
+                
+                // Only trigger if we have a filename and at least started typing after #
+                if (wikilinkMatch.filename && wikilinkMatch.fullMatch.includes('#')) {
+                    this.handleWikilinkDetection(wikilinkMatch);
+                }
+            } else {
+                // Close any existing modal if pattern is no longer present
+                if (this.currentModal) {
+                    console.log('❌ Pattern no longer matches, closing modal');
+                    this.currentModal.close();
+                    this.currentModal = null;
+                }
             }
         } catch (error) {
             console.error('❌ Error checking wikilink pattern:', error);
@@ -158,17 +187,77 @@ export class ExcalinkViewPlugin implements PluginValue {
         if (frames && frames.length > 0) {
             console.log(`    🖼️ Available frames in "${matchedFilename}": [${frames.map(f => f.name).join(', ')}]`);
             
-            // Filter frames based on partial input (handle both formats)
+            // Filter frames based on partial input if provided
+            let matchingFrames = frames;
             if (match.partialFrame) {
                 const cleanPartialFrame = this.cleanPartialFrame(match.partialFrame);
-
-                const matchingFrames = frames.filter(frame => frame.name.toLowerCase().startsWith(cleanPartialFrame.toLowerCase()));
+                matchingFrames = frames.filter(frame => 
+                    frame.name.toLowerCase().includes(cleanPartialFrame.toLowerCase())
+                );
                 console.log(`    🎯 Matching frames for "${cleanPartialFrame}": [${matchingFrames.map(f => f.name).join(', ')}]`);
+            }
+
+            // Only show modal if there are frames to suggest
+            if (matchingFrames.length > 0) {
+                this.showFrameSuggestModal(matchingFrames, matchedFilename, match);
+            } else {
+                console.log(`    ❓ No frames match the partial input "${match.partialFrame}"`);
             }
         } else {
             console.log(`    ❌ No frames found for any variation of "${match.filename}"`);
             console.log(`    🔍 Tried: ${possibleFilenames.join(', ')}`);
+            
+            // Show a helpful message to the user
+            console.log(`    💡 Make sure the file "${match.filename}" exists and contains frames`);
         }
+    }
+
+    /**
+     * Show the frame suggestion modal
+     */
+    private showFrameSuggestModal(frames: any[], filename: string, match: WikilinkMatch): void {
+        console.log(`🎭 Opening FrameSuggestModal with ${frames.length} frames`);
+        
+        // Close any existing modal first
+        if (this.currentModal) {
+            this.currentModal.close();
+            this.currentModal = null;
+        }
+        
+        const modal = new FrameSuggestModal(
+            this.app,
+            frames,
+            filename,
+            (selectedFrame) => {
+                console.log(`✅ Frame selected: "${selectedFrame.name}"`);
+                this.currentModal = null;
+                // TODO: Replace the partial frame text with the selected frame name
+                // This will be implemented when we integrate with the editor
+            }
+        );
+        
+        // Store reference to current modal
+        this.currentModal = modal;
+        
+        modal.open();
+        
+        // Pre-fill the search if there's a partial frame
+        if (match.partialFrame) {
+            const cleanPartialFrame = this.cleanPartialFrame(match.partialFrame);
+            // Set the input value after opening
+            setTimeout(() => {
+                if (modal.inputEl) {
+                    modal.inputEl.value = cleanPartialFrame;
+                    modal.inputEl.dispatchEvent(new Event('input'));
+                }
+            }, 10);
+        }
+        
+        // Handle modal close event
+        modal.onClose = () => {
+            this.currentModal = null;
+            console.log(`👋 FrameSuggestModal closed for "${filename}"`);
+        };
     }
     /**
      * Generate different filename variations to try
@@ -199,6 +288,18 @@ export class ExcalinkViewPlugin implements PluginValue {
     }
 
     destroy(): void {
+        // Clean up any pending timers
+        if (this.debounceTimer) {
+            clearTimeout(this.debounceTimer);
+            this.debounceTimer = null;
+        }
+        
+        // Close any open modal
+        if (this.currentModal) {
+            this.currentModal.close();
+            this.currentModal = null;
+        }
+        
         console.log('🧹 ExcalinkViewPlugin destroyed');
     }
 }
