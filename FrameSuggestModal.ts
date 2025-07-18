@@ -9,6 +9,7 @@ export class FrameSuggestModal extends FuzzySuggestModal<FrameInfo> {
 	private frames: FrameInfo[];
 	private onSelect: (frame: FrameInfo) => void;
 	private filename: string;
+	private onCloseCallback?: () => void;
 
 	constructor(
 		app: App,
@@ -32,6 +33,13 @@ export class FrameSuggestModal extends FuzzySuggestModal<FrameInfo> {
 			{ command: "↵", purpose: "to select" },
 			{ command: "esc", purpose: "to dismiss" },
 		]);
+	}
+
+	/**
+	 * Set a callback to be called when the modal closes
+	 */
+	setOnCloseCallback(callback: () => void): void {
+		this.onCloseCallback = callback;
 	}
 
 	/**
@@ -149,10 +157,31 @@ export class FrameSuggestModal extends FuzzySuggestModal<FrameInfo> {
 	}
 
 	/**
-	 * Called when modal is closed
+	 * Called when modal is closed - properly extends parent cleanup
+	 * Day 6: Enhanced with comprehensive error handling
 	 */
 	onClose(): void {
-		super.onClose();
-		console.log(`👋 FrameSuggestModal closed for "${this.filename}"`);
+		console.log(`👋 FrameSuggestModal closing for "${this.filename}"`);
+		
+		try {
+			// Call our custom callback first
+			if (this.onCloseCallback) {
+				try {
+					this.onCloseCallback();
+				} catch (error) {
+					console.error('❌ Error in onClose callback:', error);
+					// Don't let callback errors prevent modal cleanup
+				}
+			}
+		} catch (error) {
+			console.error('❌ Unexpected error in modal close handling:', error);
+		} finally {
+			// Always call parent's onClose to ensure proper cleanup
+			try {
+				super.onClose();
+			} catch (error) {
+				console.error('❌ Error in parent onClose:', error);
+			}
+		}
 	}
 }
