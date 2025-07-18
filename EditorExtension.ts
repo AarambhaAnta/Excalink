@@ -609,7 +609,8 @@ export class ExcalinkViewPlugin implements PluginValue {
             
             const testFrame1 = {
                 name: 'test-frame-1',
-                id: 'test-id-1'
+                id: 'test-id-1',
+                index: 10 // Recent frame (higher index)
             };
             
             console.log('📝 Test 1 - Complete link:', testMatch1);
@@ -628,7 +629,8 @@ export class ExcalinkViewPlugin implements PluginValue {
             
             const testFrame2 = {
                 name: 'frame-name-2',
-                id: 'test-id-2'
+                id: 'test-id-2',
+                index: 5 // Older frame (lower index)
             };
             
             console.log('📝 Test 2 - Incomplete link:', testMatch2);
@@ -647,7 +649,8 @@ export class ExcalinkViewPlugin implements PluginValue {
             
             const testFrame3 = {
                 name: 'special-frame [with] brackets',
-                id: 'test-id-3'
+                id: 'test-id-3',
+                index: 15 // Most recent frame (highest index)
             };
             
             console.log('📝 Test 3 - Special characters:', testMatch3);

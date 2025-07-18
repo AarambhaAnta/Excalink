@@ -4,6 +4,7 @@ import { ExcalidrawDecompressor } from "ExcalidrawDecompressor";
 export interface FrameInfo{
     name: string;
     id: string;
+    index: number; // Position in the elements array - used for ordering (newer frames have higher index)
 }
 
 export interface FileFrameMap {
@@ -329,7 +330,8 @@ export class FrameIndexer{
 
                         frames.push({
                             name: frameName,
-                            id: frameId
+                            id: frameId,
+                            index: i // Store the position in elements array for ordering
                         });
 
                         console.log(`🖼️ Found frame: "${frameName}" (${frameId})${frameComment ? ` - ${frameComment}` : ''}`);

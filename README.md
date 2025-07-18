@@ -6,8 +6,14 @@ An Obsidian plugin that enables smart auto-suggestion of frame names from `.exca
 
 - 🔍 **Smart Frame Detection**: Automatically scans all `.excalidraw.md` files in your vault
 - 🎯 **Real-time Pattern Detection**: Detects `[[filename#` typing patterns in the editor
-- 🎭 **Fuzzy Search Modal**: Shows interactive frame suggestions with fuzzy matching
+- 🎭 **Fuzzy Search Modal**: Shows interactive frame suggestions with fuzzy matching  
+- 📅 **Smart Frame Ordering**: Displays frames in reverse chronological order (newest first)
 - 🖼️ **Frame Preview**: Visual frame suggestions with icons and file context
+- 🎯 **Real-time Pattern Detection**: Detects `[[filename#` typing patterns in the editor
+- 🎭 **Fuzzy Search Modal**: Shows interactive frame suggestions with fuzzy matching
+- � **Smart Frame Ordering**: Displays frames in reverse chronological order (newest first)
+- 🆕 **Recent Frame Indicators**: Visual cues for recently created frames
+- �🖼️ **Frame Preview**: Visual frame suggestions with icons and file context
 - 🔗 **Auto-completion**: Automatically replaces partial links with complete frame references
 - 🗜️ **Format Support**: Handles both compressed and regular Excalidraw formats
 - 🔧 **Smart Filename Matching**: Supports multiple filename variations and formats
@@ -23,10 +29,11 @@ An Obsidian plugin that enables smart auto-suggestion of frame names from `.exca
 
 1. Create frames in your Excalidraw drawings and give them names
 2. When typing `[[filename#` in any note, the plugin detects the pattern in real-time
-3. A fuzzy search modal appears showing all matching frames from that file
+3. A fuzzy search modal appears showing all matching frames from that file (newest frames first)
 4. Use ↑↓ to navigate, ↵ to select, or Esc to dismiss
-5. Selecting a frame automatically inserts the complete link: `[[filename#^frame=frameName]]`
-6. The cursor is positioned after the inserted link for continued editing
+5. When you type, the list filters to show matching frame names using fuzzy search
+6. Selecting a frame automatically inserts the complete link: `[[filename#^frame=frameName]]`
+7. The cursor is positioned after the inserted link for continued editing
 
 ## Performance Features
 

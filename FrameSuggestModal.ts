@@ -44,9 +44,11 @@ export class FrameSuggestModal extends FuzzySuggestModal<FrameInfo> {
 
 	/**
 	 * Get all items to search through (required by FuzzySuggestModal)
+	 * Returns frames in reverse order of creation (newest first)
 	 */
 	getItems(): FrameInfo[] {
-		return this.frames;
+		// Sort frames by index in descending order (newest/highest index first)
+		return [...this.frames].sort((a, b) => b.index - a.index);
 	}
 
 	/**
