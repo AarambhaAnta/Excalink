@@ -1,4 +1,4 @@
-import { FuzzySuggestModal } from "obsidian";
+import { FuzzySuggestModal, App } from "obsidian";
 import { FrameInfo } from "FrameIndexer";
 
 /**
