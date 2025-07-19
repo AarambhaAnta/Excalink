@@ -2,6 +2,12 @@
 
 An Obsidian plugin that enables smart auto-suggestion of frame names from `.excalidraw.md` files when typing `[[filename#` in the editor.
 
+## Demo
+
+![Excalink Plugin Demo](assets/excalink-demo.gif)
+
+*Watch Excalink in action: Type `[[filename#` and get instant frame suggestions with fuzzy search and auto-completion!*
+
 ## Features
 
 - 🔍 **Smart Frame Detection**: Automatically scans all `.excalidraw.md` files in your vault
@@ -60,6 +66,18 @@ Access plugin settings via **Settings → Community Plugins → Excalink Plugin 
 - **Show Diagnostics in Notices**: Display plugin status messages
 - **Show Frame Icons**: Visual frame indicators in suggestions
 - **Show File Context**: Display source file information in suggestions
+
+## Visual Workflow
+
+The plugin workflow is simple and intuitive:
+
+1. **📝 Type the pattern**: Start typing `[[your-excalidraw-file#` in any note
+2. **⚡ Instant detection**: Plugin detects the pattern in real-time
+3. **🎭 Modal appears**: Fuzzy search modal shows all available frames
+4. **🔍 Filter & select**: Type to filter, use arrows to navigate, Enter to select
+5. **✅ Auto-completion**: Complete link inserted: `[[file#^frame=FrameName]]`
+
+![Demo GIF shows this exact workflow in action](assets/excalink-demo.gif)
 
 ## Performance Features
 
@@ -249,6 +267,7 @@ If Excalink saves you time and enhances your Excalidraw workflow, consider suppo
 ### Custom Plugin Development
 
 Need a custom Obsidian plugin for your workflow? I offer:
+
 - **Custom Plugin Development**: Tailored solutions for your specific needs
 - **Plugin Consultation**: Expert advice on Obsidian automation and workflows
 - **Training & Workshops**: Learn to build your own plugins
