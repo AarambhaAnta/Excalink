@@ -1,7 +1,7 @@
 {
 	"id": "excalink",
 	"name": "Excalink",
-	"version": "1.0.0",
+	"version": "v1.0.0",
 	"minAppVersion": "0.15.0",
 	"description": "Enable smart auto-suggestion of frame names from .excalidraw.md files when typing [[filename# in the editor",
 	"author": "Aarambha",
