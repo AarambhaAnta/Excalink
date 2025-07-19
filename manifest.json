@@ -5,7 +5,7 @@
 	"minAppVersion": "0.15.0",
 	"description": "Enable smart auto-suggestion of frame names from .excalidraw.md files when typing [[filename# in the editor",
 	"author": "Aarambha",
-	"authorUrl": "https://github.com/AarambhaAnta/Excalink",
+	"authorUrl": "https://github.com/AarambhaAnta",
 	"fundingUrl": {
 		"Github Sponsor": "https://github.com/sponsors/AarambhaAnta"
 	},
