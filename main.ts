@@ -18,7 +18,6 @@ export default class Excalink extends Plugin{
 		try {
 			// Load settings first
 			await this.loadSettings();
-			console.log('🚀 Excalink plugin loading...');
 
 			// Add settings tab
 			this.addSettingTab(new ExcalinkSettingTab(this.app, this));
@@ -26,12 +25,9 @@ export default class Excalink extends Plugin{
 			// Only initialize core functionality if enabled
 			if (this.settings.enableFrameSuggestions) {
 				await this.initializeCore();
-			} else {
-				console.log('📴 Frame suggestions disabled in settings');
 			}
 
 			this.isInitialized = true;
-			console.log('✅ Excalink plugin loaded successfully!');
 			
 		} catch (error) {
 			console.error('❌ Critical error during plugin loading:', error);
@@ -72,9 +68,6 @@ export default class Excalink extends Plugin{
 			try {
 				this.frameIndexer = new FrameIndexer(this.app.vault);
 				await this.frameIndexer.scanAllExcalidrawFiles();
-				if (this.settings.enableDebugLogging) {
-					console.log('✅ Frame indexer initialized successfully');
-				}
 			} catch (error) {
 				console.error('❌ Failed to initialize frame indexer:', error);
 				new Notice('Excalink: Failed to scan Excalidraw files. Plugin will work with limited functionality.');
@@ -90,9 +83,6 @@ export default class Excalink extends Plugin{
 				
 				this.editorExtension = new EditorExtension(this.frameIndexer, this.app, this);
 				this.registerEditorExtension(this.editorExtension.getExtension());
-				if (this.settings.enableDebugLogging) {
-					console.log('✅ Editor extension registered successfully');
-				}
 			} catch (error) {
 				console.error('❌ Failed to initialize editor extension:', error);
 				new Notice('Excalink: Failed to initialize editor integration. Please restart Obsidian.');
@@ -103,9 +93,6 @@ export default class Excalink extends Plugin{
 			if (this.settings.enableFileWatching) {
 				try {
 					this.setupFileChangeListeners();
-					if (this.settings.enableDebugLogging) {
-						console.log('✅ File change listeners registered');
-					}
 				} catch (error) {
 					console.error('❌ Failed to setup file change listeners:', error);
 					console.warn('⚠️ File watching disabled - frames will not auto-update');
@@ -115,9 +102,6 @@ export default class Excalink extends Plugin{
 			// Add debug commands with error handling
 			try {
 				this.setupDebugCommands();
-				if (this.settings.enableDebugLogging) {
-					console.log('✅ Debug commands registered');
-				}
 			} catch (error) {
 				console.error('❌ Failed to register debug commands:', error);
 			}
@@ -137,9 +121,6 @@ export default class Excalink extends Plugin{
 			// when we unregister it, but we need to set our reference to null
 			this.editorExtension = null;
 
-			if (this.settings.enableDebugLogging) {
-				console.log('📴 Core functionality disabled');
-			}
 		} catch (error) {
 			console.error('❌ Error disabling core functionality:', error);
 		}
@@ -164,9 +145,6 @@ export default class Excalink extends Plugin{
 				new Notice(message, 3000);
 			}
 			
-			if (this.settings.enableDebugLogging) {
-				console.log('✅ Force rescan completed:', stats);
-			}
 		} catch (error) {
 			console.error('❌ Error during force rescan:', error);
 			throw error;
