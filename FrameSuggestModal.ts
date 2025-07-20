@@ -27,11 +27,6 @@ export class FrameSuggestModal extends FuzzySuggestModal<FrameInfo> {
 		this.onSelect = onSelect;
 		this.settings = settings;
 
-		if (this.settings.enableDebugLogging) {
-			console.log(
-				`🎯 FrameSuggestModal created for "${filename}" with ${frames.length} frames`,
-			);
-		}
 
 		// Set modal properties
 		this.setPlaceholder(`Search frames in ${filename}...`);
@@ -80,9 +75,6 @@ export class FrameSuggestModal extends FuzzySuggestModal<FrameInfo> {
 	 * Called when user selects an item (required by FuzzySuggestModal)
 	 */
 	onChooseItem(frame: FrameInfo): void {
-		if (this.settings.enableDebugLogging) {
-			console.log(`✅ User selected frame: "${frame.name}" (${frame.id})`);
-		}
 		this.onSelect(frame);
 		this.close();
 	}
@@ -101,7 +93,7 @@ export class FrameSuggestModal extends FuzzySuggestModal<FrameInfo> {
 		// Add frame icon (based on settings)
 		if (this.settings.showFrameIcons) {
 			const iconEl = el.createDiv({ cls: "excalink-suggestion-icon" });
-			iconEl.innerHTML = "🖼️";
+			iconEl.textContent = "🖼️";
 		}
 
 		// Create content container
@@ -121,9 +113,6 @@ export class FrameSuggestModal extends FuzzySuggestModal<FrameInfo> {
 			});
 		}
 
-		if (this.settings.enableDebugLogging) {
-			console.log(`🎨 Rendered suggestion for frame: "${frame.name}"`);
-		}
 	}
 
 	/**
@@ -184,9 +173,6 @@ export class FrameSuggestModal extends FuzzySuggestModal<FrameInfo> {
 			this.modalEl.addClass("excalink-modal-minimal");
 		}
 
-		if (this.settings.enableDebugLogging) {
-			console.log(`🚀 FrameSuggestModal opened for "${this.filename}"`);
-		}
 	}
 
 	/**
@@ -194,9 +180,6 @@ export class FrameSuggestModal extends FuzzySuggestModal<FrameInfo> {
 	 * Day 7: Enhanced with settings integration
 	 */
 	onClose(): void {
-		if (this.settings.enableDebugLogging) {
-			console.log(`👋 FrameSuggestModal closing for "${this.filename}"`);
-		}
 		
 		try {
 			// Call our custom callback first

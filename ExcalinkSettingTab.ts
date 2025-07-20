@@ -22,17 +22,17 @@ export class ExcalinkSettingTab extends PluginSettingTab {
         // Plugin header with description
         containerEl.createEl('h1', { text: 'Excalink Plugin Settings' });
         
-        const descEl = containerEl.createEl('p');
-        descEl.innerHTML = `
-            Configure your Excalink plugin for optimal frame suggestion experience. 
-            <br><br>
-            <strong>🖼️ Excalink</strong> enables smart auto-suggestion of frame names from 
-            <code>.excalidraw.md</code> files when typing <code>[[filename#</code> in your notes.
-        `;
-        descEl.style.marginBottom = '20px';
-        descEl.style.padding = '10px';
-        descEl.style.backgroundColor = 'var(--background-secondary)';
-        descEl.style.borderRadius = '8px';
+        const descEl = containerEl.createEl('p', { cls: 'excalink-description' });
+        descEl.appendText('Configure your Excalink plugin for optimal frame suggestion experience.');
+        descEl.createEl('br');
+        descEl.createEl('br');
+        const strongEl = descEl.createEl('strong');
+        strongEl.textContent = '🖼️ Excalink';
+        descEl.appendText(' enables smart auto-suggestion of frame names from ');
+        descEl.createEl('code', { text: '.excalidraw.md' });
+        descEl.appendText(' files when typing ');
+        descEl.createEl('code', { text: '[[filename#' });
+        descEl.appendText(' in your notes.');
 
         // Core Functionality Section
         containerEl.createEl('h2', { text: '🚀 Core Functionality' });
@@ -263,16 +263,15 @@ export class ExcalinkSettingTab extends PluginSettingTab {
 
         // Plugin info section
         const infoEl = containerEl.createEl('div');
-        infoEl.style.marginTop = '30px';
-        infoEl.style.padding = '15px';
-        infoEl.style.backgroundColor = 'var(--background-secondary)';
-        infoEl.style.borderRadius = '8px';
-        infoEl.style.borderLeft = '4px solid var(--interactive-accent)';
+        infoEl.addClass('excalink-plugin-info');
         
         infoEl.createEl('h3', { text: '📋 Plugin Information' });
         infoEl.createEl('p', { text: `Version: ${this.plugin.manifest.version}` });
         infoEl.createEl('p', { text: `Author: ${this.plugin.manifest.author}` });
-        infoEl.createEl('p').innerHTML = `Repository: <a href="https://github.com/AarambhaAnta/Excalink" target="_blank">GitHub</a>`;
+        const repoEl = infoEl.createEl('p');
+        repoEl.appendText('Repository: ');
+        const linkEl = repoEl.createEl('a', { href: 'https://github.com/AarambhaAnta/Excalink', text: 'GitHub' });
+        linkEl.setAttr('target', '_blank');
         
         // Status information
         if (this.plugin.frameIndexer?.isReady()) {
@@ -318,10 +317,6 @@ class ConfirmationModal extends Modal {
         contentEl.createEl('p', { text: this.message });
         
         const buttonContainer = contentEl.createDiv({ cls: 'modal-button-container' });
-        buttonContainer.style.display = 'flex';
-        buttonContainer.style.gap = '10px';
-        buttonContainer.style.justifyContent = 'flex-end';
-        buttonContainer.style.marginTop = '20px';
         
         const cancelButton = buttonContainer.createEl('button', { text: 'Cancel' });
         cancelButton.onclick = () => {
