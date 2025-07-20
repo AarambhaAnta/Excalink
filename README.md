@@ -216,6 +216,15 @@ After building, enable the plugin in Obsidian settings.
 
 ## Changelog
 
+### Version 1.0.1 (2024-07-20)
+
+#### Bug Fixes & Security Updates
+
+- ✅ **Security Enhancement**: Replaced `innerHTML` with safe DOM API methods
+- ✅ **Styling Improvements**: Moved inline styles to CSS for better theme compatibility
+- ✅ **Performance Optimization**: Reduced console logging to prevent dev console pollution
+- ✅ **Code Quality**: Enhanced adherence to Obsidian plugin development guidelines
+
 ### Version 1.0.0 (2024-07-19)
 
 Initial Release - Complete 7-Day Development Sprint
