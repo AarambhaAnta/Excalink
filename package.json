@@ -1,6 +1,6 @@
 {
 	"name": "excalink-plugin",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Enable smart auto-suggestion of frame names from .excalidraw.md files when typing [[filename# in the editor",
 	"main": "main.js",
 	"scripts": {
