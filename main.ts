@@ -159,7 +159,7 @@ export default class Excalink extends Plugin{
 		// Cache statistics command
 		this.addCommand({
 			id: 'show-cache-stats',
-			name: 'Show Cache Statistics',
+			name: 'Show cache statistics',
 			callback: () => {
 				try {
 					const stats = this.frameIndexer.getCacheStats();
@@ -167,7 +167,7 @@ export default class Excalink extends Plugin{
 						console.log('📊 Cache Statistics:', stats);
 					}
 					
-					const message = `Cache Statistics:\n` +
+					const message = `Cache statistics:\n` +
 						`Files: ${stats.size}\n` +
 						`Frames: ${stats.frameCount}\n` +
 						`Memory: ${stats.memoryUsage}`;
@@ -185,7 +185,7 @@ export default class Excalink extends Plugin{
 		// Full diagnostics command
 		this.addCommand({
 			id: 'show-diagnostics',
-			name: 'Show Plugin Diagnostics',
+			name: 'Show plugin diagnostics',
 			callback: () => {
 				try {
 					const diagnostics = this.frameIndexer.getDiagnostics();
@@ -193,7 +193,7 @@ export default class Excalink extends Plugin{
 						console.log('🔍 Plugin Diagnostics:', diagnostics);
 					}
 					
-					const message = `Plugin Diagnostics:\n` +
+					const message = `Plugin diagnostics:\n` +
 						`Initialized: ${diagnostics.isInitialized ? '✅' : '❌'}\n` +
 						`Files: ${diagnostics.totalFiles}\n` +
 						`Frames: ${diagnostics.totalFrames}\n` +
@@ -212,7 +212,7 @@ export default class Excalink extends Plugin{
 		// Force rescan command
 		this.addCommand({
 			id: 'force-rescan',
-			name: 'Force Rescan All Files',
+			name: 'Force rescan all files',
 			callback: async () => {
 				try {
 					if (this.settings.enableDebugLogging) {
@@ -231,7 +231,7 @@ export default class Excalink extends Plugin{
 		// Comprehensive testing command (Day 7)
 		this.addCommand({
 			id: 'run-comprehensive-tests',
-			name: 'Run Comprehensive Tests',
+			name: 'Run comprehensive tests',
 			callback: () => {
 				try {
 					if (this.settings.enableDebugLogging) {
