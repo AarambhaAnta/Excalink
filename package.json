@@ -1,7 +1,7 @@
 {
 	"name": "excalink-plugin",
-	"version": "1.1.0",
-	"description": "Suggests and links the named frames and groups inside your Excalidraw drawings when typing [[filename# in the editor",
+	"version": "1.1.1",
+	"description": "Suggests and links the named frames and groups inside your Excalidraw drawings when typing [[filename# in the editor.",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
