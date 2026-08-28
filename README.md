@@ -32,7 +32,7 @@ Available under **Settings → Community plugins → Excalink**:
 
 - **Enable suggestions** — turn the picker on or off entirely
 - **Include frames** / **Include groups** — choose what shows up in the picker
-- **Show recent first** — most recently added frames/groups appear at the top
+- **Show recent first** — most recently edited frames/groups appear at the top
 - **Max suggestions displayed** — cap the picker's list size
 - **Show file context** — show the source filename under each suggestion
 
@@ -65,6 +65,14 @@ npm run build   # production build
 ```
 
 ## Changelog
+
+### 1.2.0
+
+- Suggestions now show a small preview of the actual drawing (shapes, colors,
+  rotation) instead of a generic icon, falling back to the icon when there's
+  nothing visual to show (e.g. a text-only group)
+- "Show recent first" now sorts by each frame/group's real last-edited
+  timestamp instead of its position in the file
 
 ### 1.1.0
 

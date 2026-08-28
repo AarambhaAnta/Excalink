@@ -1,6 +1,7 @@
 import { App, FuzzyMatch, FuzzySuggestModal } from "obsidian";
 import { DrawingTarget } from "../excalidraw/parser";
 import { ExcalinkSettings } from "../settings";
+import { renderThumbnail } from "./thumbnail";
 
 const TYPE_ICON: Record<DrawingTarget["type"], string> = {
 	frame: "🖼️",
@@ -32,9 +33,11 @@ export class DrawingSuggestModal extends FuzzySuggestModal<DrawingTarget> {
 	}
 
 	getItems(): DrawingTarget[] {
-		const sorted = [...this.targets].sort((a, b) =>
-			this.settings.showRecentFirst ? b.index - a.index : a.index - b.index,
-		);
+		const sorted = [...this.targets].sort((a, b) => {
+			const byUpdated = (a.updated ?? -1) - (b.updated ?? -1);
+			const cmp = byUpdated !== 0 ? byUpdated : a.index - b.index;
+			return this.settings.showRecentFirst ? -cmp : cmp;
+		});
 		return sorted.slice(0, this.settings.maxSuggestions);
 	}
 
@@ -53,7 +56,10 @@ export class DrawingSuggestModal extends FuzzySuggestModal<DrawingTarget> {
 		el.addClass("excalink-suggestion");
 
 		const iconEl = el.createDiv({ cls: "excalink-suggestion-icon" });
-		iconEl.textContent = TYPE_ICON[target.type];
+		if (!renderThumbnail(iconEl, target.elements)) {
+			iconEl.addClass("excalink-suggestion-icon-fallback");
+			iconEl.textContent = TYPE_ICON[target.type];
+		}
 
 		const contentEl = el.createDiv({ cls: "excalink-suggestion-content" });
 		const nameEl = contentEl.createDiv({ cls: "excalink-suggestion-title" });
