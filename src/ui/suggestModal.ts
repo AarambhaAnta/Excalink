@@ -1,6 +1,6 @@
 import { App, FuzzyMatch, FuzzySuggestModal } from "obsidian";
-import { DrawingTarget } from "excalidraw/parser";
-import { ExcalinkSettings } from "settings";
+import { DrawingTarget } from "../excalidraw/parser";
+import { ExcalinkSettings } from "../settings";
 
 const TYPE_ICON: Record<DrawingTarget["type"], string> = {
 	frame: "🖼️",

@@ -1,5 +1,5 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
-import Excalink from "main";
+import Excalink from "./main";
 
 export class ExcalinkSettingTab extends PluginSettingTab {
 	constructor(app: App, private plugin: Excalink) {
@@ -11,11 +11,7 @@ export class ExcalinkSettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		const descEl = containerEl.createEl("p", { cls: "excalink-description" });
-		descEl.appendText("Excalink suggests the named ");
-		descEl.createEl("strong", { text: "frames" });
-		descEl.appendText(" and ");
-		descEl.createEl("strong", { text: "groups" });
-		descEl.appendText(" inside your ");
+		descEl.appendText("Excalink suggests the named frames and groups inside your ");
 		descEl.createEl("code", { text: ".excalidraw.md" });
 		descEl.appendText(" drawings as you type ");
 		descEl.createEl("code", { text: "[[filename#" });

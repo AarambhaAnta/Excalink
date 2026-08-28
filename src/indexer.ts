@@ -1,6 +1,6 @@
 import { TFile, Vault } from "obsidian";
-import { ExcalidrawDecompressor } from "excalidraw/decompressor";
-import { DrawingTarget, parseDrawingTargets } from "excalidraw/parser";
+import { ExcalidrawDecompressor } from "./excalidraw/decompressor";
+import { DrawingTarget, parseDrawingTargets } from "./excalidraw/parser";
 
 interface CacheEntry {
 	mtime: number;
@@ -117,11 +117,11 @@ export class DrawingIndexer {
 
 	private parseJsonBlock(block: JsonBlock, path: string): unknown {
 		const primary = block.compressed
-			? () => ExcalidrawDecompressor.decompress(block.raw)
-			: () => JSON.parse(block.raw);
+			? (): unknown => ExcalidrawDecompressor.decompress(block.raw)
+			: (): unknown => JSON.parse(block.raw);
 		const fallback = block.compressed
-			? () => JSON.parse(block.raw)
-			: () => ExcalidrawDecompressor.decompress(block.raw);
+			? (): unknown => JSON.parse(block.raw)
+			: (): unknown => ExcalidrawDecompressor.decompress(block.raw);
 
 		try {
 			return primary();

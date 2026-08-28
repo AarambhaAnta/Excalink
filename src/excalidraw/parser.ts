@@ -24,6 +24,16 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 	return typeof value === "object" && value !== null;
 }
 
+function asStringArray(value: unknown): string[] | undefined {
+	if (!Array.isArray(value)) return undefined;
+	const result: string[] = [];
+	for (const item of value) {
+		if (typeof item !== "string") return undefined;
+		result.push(item);
+	}
+	return result;
+}
+
 function deriveGroupLabel(text: string): string {
 	const line = text
 		.split("\n")
@@ -56,9 +66,12 @@ export function parseDrawingTargets(excalidrawData: unknown): DrawingTarget[] {
 	const groups = new Map<string, GroupMember[]>();
 
 	elements.forEach((element, index) => {
-		if (!isRecord(element) || !Array.isArray(element.groupIds)) return;
-		const outerGroupId = element.groupIds[element.groupIds.length - 1];
-		if (typeof outerGroupId !== "string" || !outerGroupId) return;
+		if (!isRecord(element)) return;
+		const groupIds = asStringArray(element.groupIds);
+		if (!groupIds || groupIds.length === 0) return;
+
+		const outerGroupId = groupIds[groupIds.length - 1];
+		if (!outerGroupId) return;
 
 		if (!groups.has(outerGroupId)) {
 			groups.set(outerGroupId, []);

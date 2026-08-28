@@ -1,10 +1,10 @@
 import { Extension } from "@codemirror/state";
 import { EditorView, ViewUpdate, ViewPlugin, PluginValue } from "@codemirror/view";
 import { App } from "obsidian";
-import Excalink from "main";
-import { DrawingIndexer } from "indexer";
-import { DrawingTarget } from "excalidraw/parser";
-import { DrawingSuggestModal } from "ui/suggestModal";
+import Excalink from "../main";
+import { DrawingIndexer } from "../indexer";
+import { DrawingTarget } from "../excalidraw/parser";
+import { DrawingSuggestModal } from "../ui/suggestModal";
 
 const DEBOUNCE_MS = 300;
 
@@ -28,7 +28,7 @@ export class LinkDetector {
 }
 
 class LinkDetectorViewPlugin implements PluginValue {
-	private debounceTimer: ReturnType<typeof setTimeout> | null = null;
+	private debounceTimer: number | null = null;
 	private currentModal: DrawingSuggestModal | null = null;
 	private currentView: EditorView;
 
@@ -45,12 +45,12 @@ class LinkDetectorViewPlugin implements PluginValue {
 		this.currentView = update.view;
 		if (!update.docChanged && !update.selectionSet) return;
 
-		if (this.debounceTimer) clearTimeout(this.debounceTimer);
-		this.debounceTimer = setTimeout(() => this.checkForWikilinkPattern(update.view), DEBOUNCE_MS);
+		if (this.debounceTimer) window.clearTimeout(this.debounceTimer);
+		this.debounceTimer = window.setTimeout(() => this.checkForWikilinkPattern(update.view), DEBOUNCE_MS);
 	}
 
 	destroy(): void {
-		if (this.debounceTimer) clearTimeout(this.debounceTimer);
+		if (this.debounceTimer) window.clearTimeout(this.debounceTimer);
 		this.currentModal?.close();
 		this.currentModal = null;
 	}
@@ -163,7 +163,7 @@ class LinkDetectorViewPlugin implements PluginValue {
 
 		const partial = this.cleanPartialTarget(match.partialTarget);
 		if (partial) {
-			setTimeout(() => {
+			window.setTimeout(() => {
 				if (modal.inputEl) {
 					modal.inputEl.value = partial;
 					modal.inputEl.dispatchEvent(new Event("input"));

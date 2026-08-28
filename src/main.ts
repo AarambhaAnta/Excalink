@@ -1,15 +1,15 @@
 import { Notice, Plugin, TFile } from "obsidian";
-import { DrawingIndexer } from "indexer";
-import { LinkDetector } from "editor/linkDetector";
-import { ExcalinkSettings, DEFAULT_SETTINGS } from "settings";
-import { ExcalinkSettingTab } from "settingsTab";
+import { DrawingIndexer } from "./indexer";
+import { LinkDetector } from "./editor/linkDetector";
+import { ExcalinkSettings, DEFAULT_SETTINGS } from "./settings";
+import { ExcalinkSettingTab } from "./settingsTab";
 
 export default class Excalink extends Plugin {
 	settings: ExcalinkSettings;
 	indexer: DrawingIndexer;
 
 	async onload(): Promise<void> {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+		this.settings = Object.assign({}, DEFAULT_SETTINGS, (await this.loadData()) as Partial<ExcalinkSettings>);
 		this.addSettingTab(new ExcalinkSettingTab(this.app, this));
 
 		this.indexer = new DrawingIndexer(this.app.vault);
