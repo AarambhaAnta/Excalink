@@ -42,9 +42,16 @@ export class DrawingIndexer {
 	async rescan(): Promise<{ files: number; targets: number }> {
 		this.cache.clear();
 		await this.scanAll();
+
+		const filesIndexed: DrawingTarget[][] = Object.values(this.index);
+		let targetCount = 0;
+		for (const fileTargets of filesIndexed) {
+			targetCount += fileTargets.length;
+		}
+
 		return {
 			files: Object.keys(this.index).length,
-			targets: Object.values(this.index).reduce((sum, t) => sum + t.length, 0),
+			targets: targetCount,
 		};
 	}
 
