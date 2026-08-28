@@ -42,18 +42,6 @@
     font-weight: 600;
 }
 
-/* Modal styling improvements */
-.modal.excalink-modal .modal-title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.modal.excalink-modal .modal-title::before {
-    content: "🖼️";
-    font-size: 18px;
-}
-
 /* Input placeholder styling */
 .prompt-input::placeholder {
     color: var(--text-muted);
@@ -76,9 +64,3 @@
     border-left: 4px solid var(--interactive-accent);
 }
 
-.modal-button-container {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-    margin-top: 20px;
-}
